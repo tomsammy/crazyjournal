@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Open+Sans:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 220 52% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 52% 8%;
+
+    --primary: 220 52% 8%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 9 86% 58%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 220 8.9% 46.1%;
+
+    --accent: 9 86% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 9 86% 58%;
+
+    --radius: 0.75rem;
+  }
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0A1120;
+  font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.gradient-text {
+  background-image: linear-gradient(135deg, #F05438 0%, #FF7844 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.nqq-shadow {
+  box-shadow: 0 10px 25px -5px rgba(10, 17, 32, 0.08), 0 8px 10px -6px rgba(10, 17, 32, 0.04);
+}
