@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -16,6 +16,8 @@ import {
   Compass,
   Play,
   Pause,
+  SkipBack,
+  SkipForward,
   VolumeX,
   Copy,
   Check,
@@ -39,6 +41,75 @@ interface SparResult {
   operationalShift: string;
 }
 
+
+function cleanMarkdownForSpeech(text: string): string {
+  return text
+    .replace(/^---[\s\S]*?---/, "")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
+    .replace(/#{1,6}\s+/g, "")
+    .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, "$1")
+    .replace(/^>\s*/gm, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/^-{3,}$/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function splitIntoSpeechChunks(text: string): string[] {
+  const rawSentences = text.match(/[^.!?]+[.!?]+(?:\s+|$)|[^.!?]+$/g) || [text];
+  const chunks: string[] = [];
+  let current = "";
+
+  for (const s of rawSentences) {
+    const trimmed = s.trim();
+    if (!trimmed) continue;
+
+    if (current && (current.length + trimmed.length + 1) <= 180) {
+      current += " " + trimmed;
+    } else {
+      if (current) chunks.push(current);
+      if (trimmed.length > 220) {
+        const sub = trimmed.match(/[^,;:—]+[,;:—]+(?:\s+|$)|[^,;:—]+$/g) || [trimmed];
+        let subCurrent = "";
+        for (const part of sub) {
+          const pTrim = part.trim();
+          if (!pTrim) continue;
+          if (subCurrent && (subCurrent.length + pTrim.length + 1) <= 180) {
+            subCurrent += " " + pTrim;
+          } else {
+            if (subCurrent) chunks.push(subCurrent);
+            subCurrent = pTrim;
+          }
+        }
+        if (subCurrent) chunks.push(subCurrent);
+        current = "";
+      } else {
+        current = trimmed;
+      }
+    }
+  }
+  if (current) chunks.push(current);
+  return chunks;
+}
+
+function getBestVoice(availableVoices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+  if (!availableVoices || availableVoices.length === 0) return null;
+  const preferred = availableVoices.find(
+    (v) =>
+      v.lang.startsWith("en") &&
+      (v.name.includes("Natural") ||
+       v.name.includes("Google") ||
+       v.name.includes("Samantha") ||
+       v.name.includes("Daniel") ||
+       v.name.includes("Premium") ||
+       v.name.includes("Karen") ||
+       v.name.includes("Arthur"))
+  );
+  if (preferred) return preferred;
+  return availableVoices.find((v) => v.lang.startsWith("en")) || availableVoices[0] || null;
+}
+
 export default function JournalReaderClient({ journal }: Props) {
   const [activeSection, setActiveSection] = useState<string>("");
   const [readingProgress, setReadingProgress] = useState(0);
@@ -48,8 +119,191 @@ export default function JournalReaderClient({ journal }: Props) {
   // Audio Narrator State
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [currentChunkIndex, setCurrentChunkIndex] = useState(0);
   const [playbackRate, setPlaybackRate] = useState<number>(1);
-  const speechUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const [voices, setVoices] = useState<SpeechSynthesisVoice[]>([]);
+
+  const chunksRef = useRef<string[]>([]);
+  const currentChunkIndexRef = useRef<number>(0);
+  const isSpeakingRef = useRef<boolean>(false);
+  const playbackRateRef = useRef<number>(1);
+  const activeUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+
+  // Prepare clean speech chunks for mobile and desktop
+  const chunks = useMemo(() => {
+    const parts: string[] = [
+      journal.title,
+      journal.subtitle,
+      journal.quote,
+      ...journal.sections.map((s) => `${s.title}. ${s.content}`),
+    ];
+    const combined = parts.filter(Boolean).join("\n\n");
+    const cleaned = cleanMarkdownForSpeech(combined);
+    return splitIntoSpeechChunks(cleaned);
+  }, [journal]);
+
+  useEffect(() => {
+    chunksRef.current = chunks;
+  }, [chunks]);
+
+  // Load and cache voices across mobile browsers
+  useEffect(() => {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      const updateVoices = () => {
+        try {
+          const v = window.speechSynthesis.getVoices();
+          if (v && v.length > 0) {
+            setVoices(v);
+          }
+        } catch {
+          // ignore
+        }
+      };
+      updateVoices();
+      window.speechSynthesis.onvoiceschanged = updateVoices;
+      return () => {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.onvoiceschanged = null;
+          window.speechSynthesis.cancel();
+        }
+      };
+    }
+  }, []);
+
+  function speakChunk(index: number) {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const currentChunks = chunksRef.current;
+    if (!currentChunks || currentChunks.length === 0 || index < 0 || index >= currentChunks.length) {
+      handleStopAudio();
+      return;
+    }
+
+    currentChunkIndexRef.current = index;
+    setCurrentChunkIndex(index);
+    isSpeakingRef.current = true;
+    setIsPlaying(true);
+    setIsPaused(false);
+
+    // Unstick paused speech synthesis state if needed (Android Chrome bug)
+    if (window.speechSynthesis.paused) {
+      window.speechSynthesis.resume();
+    }
+
+    const chunkText = currentChunks[index];
+    const utterance = new SpeechSynthesisUtterance(chunkText);
+    utterance.lang = "en-US";
+    utterance.rate = playbackRateRef.current;
+    utterance.pitch = 1.0;
+
+    const availableVoices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
+    const voiceToUse = getBestVoice(availableVoices);
+    if (voiceToUse) {
+      utterance.voice = voiceToUse;
+    }
+
+    utterance.onend = () => {
+      if (isSpeakingRef.current) {
+        const nextIndex = currentChunkIndexRef.current + 1;
+        if (nextIndex < currentChunks.length) {
+          speakChunk(nextIndex);
+        } else {
+          handleStopAudio();
+        }
+      }
+    };
+
+    utterance.onerror = (e) => {
+      if (e.error === "canceled" || e.error === "interrupted") {
+        return;
+      }
+      console.warn("SpeechSynthesis error on chunk:", index, e);
+      if (isSpeakingRef.current) {
+        const nextIndex = currentChunkIndexRef.current + 1;
+        if (nextIndex < currentChunks.length) {
+          speakChunk(nextIndex);
+        } else {
+          handleStopAudio();
+        }
+      }
+    };
+
+    // Store in ref to avoid premature mobile garbage collection
+    activeUtteranceRef.current = utterance;
+    window.speechSynthesis.speak(utterance);
+  }
+
+  function handleToggleAudio() {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
+      alert("Audio narration is not supported in this mobile browser.");
+      return;
+    }
+
+    if (isPlaying && !isPaused) {
+      // Virtual Pause: cancel current speech chunk, preserve position
+      isSpeakingRef.current = false;
+      window.speechSynthesis.cancel();
+      setIsPaused(true);
+      return;
+    }
+
+    if (isPlaying && isPaused) {
+      // Resume from current sentence
+      isSpeakingRef.current = true;
+      setIsPaused(false);
+      speakChunk(currentChunkIndexRef.current);
+      return;
+    }
+
+    // Fresh play from currentChunkIndex
+    isSpeakingRef.current = true;
+    speakChunk(currentChunkIndexRef.current);
+  }
+
+  function handleStopAudio() {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      isSpeakingRef.current = false;
+      window.speechSynthesis.cancel();
+    }
+    setIsPlaying(false);
+    setIsPaused(false);
+    currentChunkIndexRef.current = 0;
+    setCurrentChunkIndex(0);
+  }
+
+  function handleSkipForward() {
+    const nextIndex = Math.min(chunks.length - 1, currentChunkIndexRef.current + 1);
+    currentChunkIndexRef.current = nextIndex;
+    setCurrentChunkIndex(nextIndex);
+    if (isPlaying && !isPaused) {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      speakChunk(nextIndex);
+    }
+  }
+
+  function handleSkipBack() {
+    const prevIndex = Math.max(0, currentChunkIndexRef.current - 1);
+    currentChunkIndexRef.current = prevIndex;
+    setCurrentChunkIndex(prevIndex);
+    if (isPlaying && !isPaused) {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      speakChunk(prevIndex);
+    }
+  }
+
+  function handleChangeSpeed(rate: number) {
+    playbackRateRef.current = rate;
+    setPlaybackRate(rate);
+    if (isPlaying && !isPaused) {
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      speakChunk(currentChunkIndexRef.current);
+    }
+  }
 
   // Sparring State
   const [sparInput, setSparInput] = useState("");
@@ -83,86 +337,7 @@ export default function JournalReaderClient({ journal }: Props) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [journal.sections]);
 
-  // Audio cleanup
-  useEffect(() => {
-    return () => {
-      if (typeof window !== "undefined" && window.speechSynthesis) {
-        window.speechSynthesis.cancel();
-      }
-    };
-  }, []);
-
-  function handleToggleAudio() {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      alert("Audio narration is not supported in this browser.");
-      return;
-    }
-
-    if (isPlaying && !isPaused) {
-      window.speechSynthesis.pause();
-      setIsPaused(true);
-      return;
-    }
-
-    if (isPlaying && isPaused) {
-      window.speechSynthesis.resume();
-      setIsPaused(false);
-      return;
-    }
-
-    window.speechSynthesis.cancel();
-
-    const textToRead = [
-      journal.title,
-      journal.subtitle,
-      journal.quote,
-      ...journal.sections.map((s) => `${s.title}. ${s.content}`),
-    ].join(". ");
-
-    const utterance = new SpeechSynthesisUtterance(textToRead);
-    utterance.rate = playbackRate;
-    utterance.pitch = 1.0;
-
-    const voices = window.speechSynthesis.getVoices();
-    const naturalVoice = voices.find(
-      (v) => (v.lang.startsWith("en") && (v.name.includes("Natural") || v.name.includes("Google") || v.name.includes("Samantha") || v.name.includes("Daniel")))
-    ) || voices.find((v) => v.lang.startsWith("en"));
-
-    if (naturalVoice) utterance.voice = naturalVoice;
-
-    utterance.onend = () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-    };
-
-    utterance.onerror = () => {
-      setIsPlaying(false);
-      setIsPaused(false);
-    };
-
-    speechUtteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-    setIsPlaying(true);
-    setIsPaused(false);
-  }
-
-  function handleStopAudio() {
-    if (typeof window !== "undefined" && window.speechSynthesis) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-      setIsPaused(false);
-    }
-  }
-
-  function handleChangeSpeed(rate: number) {
-    setPlaybackRate(rate);
-    if (isPlaying && speechUtteranceRef.current) {
-      window.speechSynthesis.cancel();
-      setIsPlaying(false);
-      setIsPaused(false);
-      setTimeout(() => handleToggleAudio(), 100);
-    }
-  }
+  
 
   function handleCopyQuote(quoteText: string) {
     if (typeof window !== "undefined") {
@@ -313,64 +488,101 @@ export default function JournalReaderClient({ journal }: Props) {
       </div>
 
       {/* Floating Audio Narrator Dock */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-lg">
-        <div className="rounded-2xl border border-slate-800 bg-[#0A1120]/95 backdrop-blur-xl p-3 sm:p-4 shadow-2xl flex items-center justify-between gap-3 text-white">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              onClick={handleToggleAudio}
-              className="w-10 h-10 rounded-xl bg-brand-accent hover:bg-brand-accent-hover flex items-center justify-center text-white shadow-lg shadow-orange-500/30 transition-all flex-shrink-0"
-              title={isPlaying && !isPaused ? "Pause Narration" : "Listen to Essay"}
-            >
-              {isPlaying && !isPaused ? (
-                <Pause className="w-5 h-5" />
-              ) : (
-                <Play className="w-5 h-5 ml-0.5" />
-              )}
-            </button>
+      <div className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-lg pb-[env(safe-area-inset-bottom,0px)]">
+        <div className="rounded-2xl border border-slate-800 bg-[#0A1120]/95 backdrop-blur-xl p-3 sm:p-4 shadow-2xl flex flex-col gap-2.5 text-white">
+          {/* Subtle Scrubber Progress Bar when reading or paused */}
+          {chunks.length > 0 && (isPlaying || isPaused) && (
+            <div className="w-full bg-slate-800/80 h-1 rounded-full overflow-hidden">
+              <div
+                className="bg-brand-accent h-full transition-all duration-300"
+                style={{
+                  width: `${Math.min(100, Math.round(((currentChunkIndex + 1) / chunks.length) * 100))}%`,
+                }}
+              />
+            </div>
+          )}
 
-            <div className="min-w-0">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
+            {/* Play/Pause + Skip Controls */}
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+              <button
+                onClick={handleSkipBack}
+                disabled={currentChunkIndex === 0}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-25 disabled:hover:text-slate-400 transition-colors active:scale-95"
+                title="Previous Sentence"
+              >
+                <SkipBack className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={handleToggleAudio}
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand-accent hover:bg-brand-accent-hover flex items-center justify-center text-white shadow-lg shadow-orange-500/30 transition-all flex-shrink-0 active:scale-95"
+                title={isPlaying && !isPaused ? "Pause Narration" : "Listen to Essay"}
+              >
+                {isPlaying && !isPaused ? (
+                  <Pause className="w-5 h-5" />
+                ) : (
+                  <Play className="w-5 h-5 ml-0.5" />
+                )}
+              </button>
+
+              <button
+                onClick={handleSkipForward}
+                disabled={currentChunkIndex >= chunks.length - 1}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white disabled:opacity-25 disabled:hover:text-slate-400 transition-colors active:scale-95"
+                title="Next Sentence"
+              >
+                <SkipForward className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Track Info & Progress Label */}
+            <div className="min-w-0 flex-1 px-1">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-heading font-bold tracking-wide text-nqq-coral uppercase">
+                <span className="text-[11px] sm:text-xs font-heading font-bold tracking-wide text-nqq-coral uppercase truncate">
                   {isPlaying && !isPaused ? "Narrating Essay" : isPaused ? "Paused" : "Audio Reader"}
                 </span>
                 {isPlaying && !isPaused && (
-                  <span className="flex items-end gap-0.5 h-3">
+                  <span className="flex items-end gap-0.5 h-3 flex-shrink-0">
                     <span className="w-0.5 h-full bg-nqq-coral animate-pulse" />
                     <span className="w-0.5 h-2 bg-nqq-coral animate-pulse delay-75" />
                     <span className="w-0.5 h-3 bg-nqq-coral animate-pulse delay-150" />
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-blue-200 truncate font-sans">
-                {journal.title.split("—")[0].trim()} • {journal.readingTime}
+              <p className="text-[10px] sm:text-[11px] text-blue-200 truncate font-sans">
+                {isPlaying || isPaused
+                  ? `Sentence ${currentChunkIndex + 1} of ${chunks.length}`
+                  : `${journal.title.split("—")[0].trim()} • ${journal.readingTime}`}
               </p>
             </div>
-          </div>
 
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            {[1, 1.25, 1.5].map((rate) => (
-              <button
-                key={rate}
-                onClick={() => handleChangeSpeed(rate)}
-                className={`px-2 py-1 rounded text-[11px] font-mono font-semibold transition-all ${
-                  playbackRate === rate
-                    ? "bg-nqq-coral text-white"
-                    : "text-blue-200 hover:text-white"
-                }`}
-              >
-                {rate}x
-              </button>
-            ))}
+            {/* Speed & Stop */}
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+              {[1, 1.25, 1.5].map((rate) => (
+                <button
+                  key={rate}
+                  onClick={() => handleChangeSpeed(rate)}
+                  className={`px-1.5 sm:px-2 py-1 rounded text-[10px] sm:text-[11px] font-mono font-semibold transition-all ${
+                    playbackRate === rate
+                      ? "bg-nqq-coral text-white"
+                      : "text-blue-200 hover:text-white"
+                  }`}
+                >
+                  {rate}x
+                </button>
+              ))}
 
-            {isPlaying && (
-              <button
-                onClick={handleStopAudio}
-                className="p-1.5 rounded text-blue-200 hover:text-red-400 transition-colors ml-1"
-                title="Stop Audio"
-              >
-                <VolumeX className="w-4 h-4" />
-              </button>
-            )}
+              {(isPlaying || isPaused) && (
+                <button
+                  onClick={handleStopAudio}
+                  className="p-1.5 rounded text-blue-200 hover:text-red-400 transition-colors active:scale-95"
+                  title="Stop Audio"
+                >
+                  <VolumeX className="w-4 h-4" />
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
