@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/break-free.png"
 title: "God Did Not Give You a Brain to Stop Using It"
 description: "How Religious Conformity Can Become the Enemy of Creativity"
 date: 2026-10-23

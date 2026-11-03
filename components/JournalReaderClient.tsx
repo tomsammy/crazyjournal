@@ -736,6 +736,28 @@ export default function JournalReaderClient({ journal }: Props) {
               </span>
             </div>
 
+            {/* Captivating Post Thumbnail / Hero Visual Banner */}
+            {journal.thumbnail && (
+              <div className="mt-8 rounded-2xl overflow-hidden border border-gray-200 bg-slate-900 shadow-md">
+                <div className="relative aspect-[16/9] sm:aspect-[21/9] w-full overflow-hidden flex items-center justify-center">
+                  <img
+                    src={journal.thumbnail}
+                    alt={journal.title}
+                    className="w-full h-full object-cover object-center opacity-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between text-white/90 text-xs">
+                    <span className="font-heading font-semibold tracking-wider uppercase text-nqq-coral text-[11px]">
+                      The Crazy Journal • Visual Metaphor
+                    </span>
+                    <span className="font-mono text-[10px] text-slate-300">
+                      Editorial Art
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Core Opening Pull Quote */}
             {journal.quote && (
               <div className="mt-8 relative group p-6 rounded-xl bg-gradient-to-r from-blue-50/70 via-white to-red-50/70 border-l-4 border-nqq-coral text-gray-800 font-serif italic text-lg leading-relaxed shadow-sm">

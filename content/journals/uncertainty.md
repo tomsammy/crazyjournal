@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/shattered-certainty.png"
 title: "UNCERTAINTY — The Brutal Truth About Living in a World That Owes You No Guarantees"
 aliases:
   - The Illusion of Control

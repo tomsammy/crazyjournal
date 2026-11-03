@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/two-sides-of-me.png"
 title: "YOU CAN HAVE POWER AND STILL BE WEAK. WHAT A TERRIBLE PARADOX."
 description: "The Uncomfortable Difference Between Power, Strength, Knowledge and Wisdom"
 aliases:

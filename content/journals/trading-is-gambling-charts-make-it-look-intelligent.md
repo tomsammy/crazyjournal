@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/overthink.png"
 title: "I THINK TRADING IS GAMBLING. THE CHARTS JUST MAKE IT LOOK INTELLIGENT."
 description: "An uncomfortable confession about money, probability, the illusion of control and the dangerous obsession with financial freedom."
 aliases:

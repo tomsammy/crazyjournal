@@ -255,44 +255,64 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
             {filteredJournals.map((j) => (
               <article
                 key={j.slug}
-                className="flex flex-col justify-between h-full overflow-hidden rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 border-l-4 border-nqq-coral bg-white p-7"
+                className="group flex flex-col justify-between h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-nqq-coral/40 bg-white"
               >
                 <div>
-                  <div className="text-xs text-gray-500 mb-3 flex items-center justify-between">
-                    <span>{j.created}</span>
-                    <span className="font-semibold text-nqq-coral uppercase font-heading text-[11px]">
-                      #{j.tags[0] || "essay"}
-                    </span>
-                  </div>
-
-                  <Link href={`/journals/${j.slug}`}>
-                    <h3 className="text-2xl font-bold text-nqq-blue hover:text-nqq-coral transition-colors font-heading mb-3 leading-snug">
-                      {j.title.split("—")[0].trim()}
-                    </h3>
-                  </Link>
-
-                  {j.subtitle && (
-                    <p className="text-xs text-gray-500 font-serif italic mb-3">
-                      {j.subtitle}
-                    </p>
+                  {/* Captivating Thumbnail Header */}
+                  {j.thumbnail && (
+                    <Link href={`/journals/${j.slug}`} className="block relative aspect-[16/10] overflow-hidden bg-slate-900 border-b border-gray-100">
+                      <img
+                        src={j.thumbnail}
+                        alt={j.title}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70 group-hover:opacity-40 transition-opacity" />
+                      <span className="absolute bottom-3 left-3 px-2.5 py-1 rounded-md bg-[#0A1120]/85 backdrop-blur-md text-[10px] font-heading font-bold text-nqq-coral uppercase tracking-wider shadow">
+                        #{j.tags[0] || "essay"}
+                      </span>
+                    </Link>
                   )}
 
-                  <p className="text-gray-700 text-sm line-clamp-4 leading-relaxed mb-6">
-                    {j.excerpt}
-                  </p>
+                  <div className="p-6">
+                    <div className="text-xs text-gray-500 mb-2 flex items-center justify-between">
+                      <span>{j.created}</span>
+                      {!j.thumbnail && (
+                        <span className="font-semibold text-nqq-coral uppercase font-heading text-[11px]">
+                          #{j.tags[0] || "essay"}
+                        </span>
+                      )}
+                    </div>
+
+                    <Link href={`/journals/${j.slug}`}>
+                      <h3 className="text-xl font-bold text-nqq-blue group-hover:text-nqq-coral transition-colors font-heading mb-2 leading-snug line-clamp-2">
+                        {j.title.split("—")[0].trim()}
+                      </h3>
+                    </Link>
+
+                    {j.subtitle && (
+                      <p className="text-xs text-gray-500 font-serif italic mb-3 line-clamp-2">
+                        {j.subtitle}
+                      </p>
+                    )}
+
+                    <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-2">
+                      {j.excerpt}
+                    </p>
+                  </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
+                <div className="px-6 pb-6 pt-3 border-t border-gray-100 flex items-center justify-between">
                   <span className="text-xs text-gray-400 font-mono">
                     {j.readingTime}
                   </span>
 
                   <Link
                     href={`/journals/${j.slug}`}
-                    className="inline-flex items-center text-sm font-heading font-bold text-nqq-coral hover:text-nqq-blue transition-colors group"
+                    className="inline-flex items-center text-sm font-heading font-bold text-nqq-coral hover:text-nqq-blue transition-colors group/link"
                   >
                     <span>Read Full Article</span>
-                    <ArrowRight className="ml-1.5 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="ml-1.5 h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
                   </Link>
                 </div>
               </article>
@@ -353,11 +373,11 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
 
             {/* Right: NileQuest Quarterly Styled Cover Card Mockup */}
             <div className="md:col-span-5 flex justify-center">
-              <div className="w-full max-w-sm aspect-[3/4] rounded-2xl bg-gradient-to-br from-nqq-blue via-[#0a1128] to-blue-950 p-8 shadow-2xl border-4 border-nqq-coral/30 flex flex-col justify-between text-white relative overflow-hidden group hover:scale-[1.02] transition-transform">
+              <div className="w-full max-w-sm rounded-2xl bg-gradient-to-br from-nqq-blue via-[#0a1128] to-blue-950 p-6 sm:p-7 shadow-2xl border-4 border-nqq-coral/30 flex flex-col justify-between text-white relative overflow-hidden group hover:scale-[1.02] transition-transform">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-nqq-coral/20 rounded-full blur-2xl" />
 
                 <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b border-white/20 pb-4">
+                  <div className="flex items-center justify-between border-b border-white/20 pb-3">
                     <span className="font-heading font-bold tracking-widest text-xs uppercase text-nqq-coral">
                       Vol. I • Issue 1
                     </span>
@@ -366,16 +386,27 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-extrabold font-heading text-white leading-tight">
+                  {featured.thumbnail && (
+                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-900 border border-white/10 shadow-inner">
+                      <img
+                        src={featured.thumbnail}
+                        alt={featured.title}
+                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    </div>
+                  )}
+
+                  <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white leading-tight">
                     {featured.title.split("—")[0].trim()}
                   </h3>
 
-                  <p className="text-xs text-blue-200 line-clamp-3 leading-relaxed">
+                  <p className="text-xs text-blue-200 line-clamp-2 leading-relaxed">
                     {featured.subtitle || featured.excerpt}
                   </p>
                 </div>
 
-                <div className="pt-6 border-t border-white/20 flex items-center justify-between text-xs">
+                <div className="pt-4 mt-4 border-t border-white/20 flex items-center justify-between text-xs">
                   <span className="font-heading font-semibold text-nqq-coral">
                     The Crazy Journal
                   </span>

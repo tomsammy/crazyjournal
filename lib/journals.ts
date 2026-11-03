@@ -25,6 +25,7 @@ export interface JournalMeta {
   quote: string;
   excerpt: string;
   promotionalExcerpt?: string;
+  thumbnail?: string;
 }
 
 export interface JournalFull extends JournalMeta {
@@ -39,6 +40,19 @@ const JOURNALS_DIR = path.join(process.cwd(), "content", "journals");
 function extractRomanNumeral(title: string): string | undefined {
   const match = title.match(/^(?:Section\s+)?([IVXLCDM]+)[\.\:\s]/i);
   return match ? match[1].toUpperCase() : undefined;
+}
+
+
+function getDefaultThumbnailForSlug(slug: string): string {
+  const map: Record<string, string> = {
+    "uncertainty": "/images/journals/shattered-certainty.png",
+    "god-did-not-give-you-a-brain-to-stop-using-it": "/images/journals/break-free.png",
+    "you-can-have-power-and-still-be-weak": "/images/journals/two-sides-of-me.png",
+    "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
+    "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
+    "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
+  };
+  return map[slug] || "/images/journals/overthink.png";
 }
 
 function slugify(text: string): string {

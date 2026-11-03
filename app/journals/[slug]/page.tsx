@@ -24,12 +24,21 @@ export function generateMetadata({ params }: Props) {
     return { title: "Journal Not Found — The Crazy Journal" };
   }
 
+  const images = journal.thumbnail ? [{ url: journal.thumbnail }] : [];
+
   return {
     title: `${journal.title} — The Crazy Journal`,
     description: journal.quote || journal.excerpt,
     openGraph: {
       title: journal.title,
       description: journal.quote || journal.excerpt,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: journal.title,
+      description: journal.quote || journal.excerpt,
+      images: journal.thumbnail ? [journal.thumbnail] : [],
     },
   };
 }

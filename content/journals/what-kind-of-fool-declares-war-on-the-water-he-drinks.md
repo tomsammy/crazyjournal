@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/my-thoughts-my-words.png"
 title: "WHAT KIND OF FOOL DECLARES WAR ON THE WATER HE DRINKS?"
 description: "An uncomfortable reflection on an ancient Yoruba Ifá chant, the violence of words, betrayal and the stupidity of human ingratitude."
 aliases:

@@ -1,4 +1,5 @@
 ---
+thumbnail: "/images/journals/shattered-certainty.png"
 title: "BINARY OPTIONS: FINANCIAL FREEDOM OR A CASINO DISGUISED AS TRADING?"
 description: "The most dangerous thing about binary options isn't that you can lose money. It's that you can win."
 aliases:
