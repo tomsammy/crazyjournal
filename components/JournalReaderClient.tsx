@@ -128,6 +128,8 @@ export default function JournalReaderClient({ journal }: Props) {
   const isSpeakingRef = useRef<boolean>(false);
   const playbackRateRef = useRef<number>(1);
   const activeUtteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+  const html5AudioRef = useRef<HTMLAudioElement | null>(null);
+  const audioEngineRef = useRef<"speech" | "html5">("speech");
 
   // Prepare clean speech chunks for mobile and desktop
   const chunks = useMemo(() => {
@@ -166,12 +168,63 @@ export default function JournalReaderClient({ journal }: Props) {
           window.speechSynthesis.onvoiceschanged = null;
           window.speechSynthesis.cancel();
         }
+        if (html5AudioRef.current) {
+          html5AudioRef.current.pause();
+        }
       };
+    } else {
+      // In-app browsers (Facebook, Instagram, TikTok) without SpeechSynthesis
+      audioEngineRef.current = "html5";
     }
   }, []);
 
+  function playHtml5Chunk(index: number, text: string) {
+    if (typeof window === "undefined") return;
+
+    if (html5AudioRef.current) {
+      html5AudioRef.current.pause();
+      html5AudioRef.current.onended = null;
+      html5AudioRef.current.onerror = null;
+    }
+
+    const audioUrl = `/api/tts?text=${encodeURIComponent(text)}`;
+    const audio = new Audio(audioUrl);
+    audio.playbackRate = playbackRateRef.current;
+    html5AudioRef.current = audio;
+
+    audio.onended = () => {
+      if (isSpeakingRef.current) {
+        const nextIndex = currentChunkIndexRef.current + 1;
+        if (nextIndex < chunksRef.current.length) {
+          speakChunk(nextIndex);
+        } else {
+          handleStopAudio();
+        }
+      }
+    };
+
+    audio.onerror = (e) => {
+      console.warn("HTML5 audio playback error on chunk", index, e);
+      if (isSpeakingRef.current) {
+        const nextIndex = currentChunkIndexRef.current + 1;
+        if (nextIndex < chunksRef.current.length) {
+          speakChunk(nextIndex);
+        } else {
+          handleStopAudio();
+        }
+      }
+    };
+
+    const playPromise = audio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch((err) => {
+        console.warn("Audio play prevented or interrupted:", err);
+      });
+    }
+  }
+
   function speakChunk(index: number) {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    if (typeof window === "undefined") return;
     const currentChunks = chunksRef.current;
     if (!currentChunks || currentChunks.length === 0 || index < 0 || index >= currentChunks.length) {
       handleStopAudio();
@@ -184,64 +237,71 @@ export default function JournalReaderClient({ journal }: Props) {
     setIsPlaying(true);
     setIsPaused(false);
 
-    // Unstick paused speech synthesis state if needed (Android Chrome bug)
-    if (window.speechSynthesis.paused) {
-      window.speechSynthesis.resume();
-    }
-
     const chunkText = currentChunks[index];
-    const utterance = new SpeechSynthesisUtterance(chunkText);
-    utterance.lang = "en-US";
-    utterance.rate = playbackRateRef.current;
-    utterance.pitch = 1.0;
 
-    const availableVoices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
-    const voiceToUse = getBestVoice(availableVoices);
-    if (voiceToUse) {
-      utterance.voice = voiceToUse;
-    }
-
-    utterance.onend = () => {
-      if (isSpeakingRef.current) {
-        const nextIndex = currentChunkIndexRef.current + 1;
-        if (nextIndex < currentChunks.length) {
-          speakChunk(nextIndex);
-        } else {
-          handleStopAudio();
-        }
-      }
-    };
-
-    utterance.onerror = (e) => {
-      if (e.error === "canceled" || e.error === "interrupted") {
-        return;
-      }
-      console.warn("SpeechSynthesis error on chunk:", index, e);
-      if (isSpeakingRef.current) {
-        const nextIndex = currentChunkIndexRef.current + 1;
-        if (nextIndex < currentChunks.length) {
-          speakChunk(nextIndex);
-        } else {
-          handleStopAudio();
-        }
-      }
-    };
-
-    // Store in ref to avoid premature mobile garbage collection
-    activeUtteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
-  }
-
-  function handleToggleAudio() {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) {
-      alert("Audio narration is not supported in this mobile browser.");
+    // Detect if browser lacks SpeechSynthesis (e.g. Facebook/Instagram/TikTok In-App Browser)
+    const hasSpeechSynthesis = "speechSynthesis" in window && !!window.speechSynthesis;
+    if (!hasSpeechSynthesis || audioEngineRef.current === "html5") {
+      playHtml5Chunk(index, chunkText);
       return;
     }
 
+    // Native Speech Synthesis Engine with auto-fallback
+    try {
+      if (window.speechSynthesis.paused) {
+        window.speechSynthesis.resume();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(chunkText);
+      utterance.lang = "en-US";
+      utterance.rate = playbackRateRef.current;
+      utterance.pitch = 1.0;
+
+      const availableVoices = voices.length > 0 ? voices : window.speechSynthesis.getVoices();
+      const voiceToUse = getBestVoice(availableVoices);
+      if (voiceToUse) {
+        utterance.voice = voiceToUse;
+      }
+
+      utterance.onend = () => {
+        if (isSpeakingRef.current) {
+          const nextIndex = currentChunkIndexRef.current + 1;
+          if (nextIndex < currentChunks.length) {
+            speakChunk(nextIndex);
+          } else {
+            handleStopAudio();
+          }
+        }
+      };
+
+      utterance.onerror = (e) => {
+        if (e.error === "canceled" || e.error === "interrupted") {
+          return;
+        }
+        console.warn("SpeechSynthesis error, seamlessly falling back to HTML5 audio stream:", e);
+        audioEngineRef.current = "html5";
+        playHtml5Chunk(index, chunkText);
+      };
+
+      activeUtteranceRef.current = utterance;
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn("SpeechSynthesis exception, using HTML5 audio fallback:", err);
+      audioEngineRef.current = "html5";
+      playHtml5Chunk(index, chunkText);
+    }
+  }
+
+  function handleToggleAudio() {
     if (isPlaying && !isPaused) {
-      // Virtual Pause: cancel current speech chunk, preserve position
+      // Virtual Pause
       isSpeakingRef.current = false;
-      window.speechSynthesis.cancel();
+      if (typeof window !== "undefined" && "speechSynthesis" in window) {
+        window.speechSynthesis.cancel();
+      }
+      if (html5AudioRef.current) {
+        html5AudioRef.current.pause();
+      }
       setIsPaused(true);
       return;
     }
@@ -260,9 +320,13 @@ export default function JournalReaderClient({ journal }: Props) {
   }
 
   function handleStopAudio() {
+    isSpeakingRef.current = false;
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
-      isSpeakingRef.current = false;
       window.speechSynthesis.cancel();
+    }
+    if (html5AudioRef.current) {
+      html5AudioRef.current.pause();
+      html5AudioRef.current.currentTime = 0;
     }
     setIsPlaying(false);
     setIsPaused(false);
@@ -278,6 +342,9 @@ export default function JournalReaderClient({ journal }: Props) {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
+      if (html5AudioRef.current) {
+        html5AudioRef.current.pause();
+      }
       speakChunk(nextIndex);
     }
   }
@@ -290,6 +357,9 @@ export default function JournalReaderClient({ journal }: Props) {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
+      if (html5AudioRef.current) {
+        html5AudioRef.current.pause();
+      }
       speakChunk(prevIndex);
     }
   }
@@ -297,9 +367,15 @@ export default function JournalReaderClient({ journal }: Props) {
   function handleChangeSpeed(rate: number) {
     playbackRateRef.current = rate;
     setPlaybackRate(rate);
+    if (html5AudioRef.current) {
+      html5AudioRef.current.playbackRate = rate;
+    }
     if (isPlaying && !isPaused) {
       if (typeof window !== "undefined" && "speechSynthesis" in window) {
         window.speechSynthesis.cancel();
+      }
+      if (html5AudioRef.current) {
+        html5AudioRef.current.pause();
       }
       speakChunk(currentChunkIndexRef.current);
     }
