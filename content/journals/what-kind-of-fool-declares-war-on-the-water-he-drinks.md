@@ -18,16 +18,6 @@ tags:
   - self-sabotage
   - integrity
   - mental-models
-promotional_excerpt: |
-  What kind of person declares war on the very water they need to drink?
-
-  You bathe with water. You cook with it. You drink it. Your body depends on it. Yet you somehow decide to make water your enemy.
-
-  We destroy relationships that sustain us. We undermine people who have helped us. We attack the systems from which we benefit.
-
-  And perhaps the water is not always another person. What if the water you are making an enemy of is your own health, your own time, your own future?
-
-  Before you open your mouth to damage something, remember: not everyone who knows the value of water has the wisdom to stop poisoning it.
 status: published
 ---
 

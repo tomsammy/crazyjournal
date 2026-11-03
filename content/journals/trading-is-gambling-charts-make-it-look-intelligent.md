@@ -5,20 +5,6 @@ aliases:
   - The Illusion of Market Control
   - Calculation vs Gambling
   - Compounding vs Reality
-promotional_excerpt: |
-  I've spent time thinking about trading, and I've reached an uncomfortable conclusion.
-
-  Trading can make you money. But making money isn't the same as building wealth.
-
-  You can understand risk management and still destroy your savings.
-
-  You can win 100 trades and still have nothing meaningful to show for it.
-
-  You can spend five years pursuing financial freedom and end up further away from it.
-
-  Perhaps the most expensive thing trading takes from people isn't even their money. It's the years they could have spent building something else.
-
-  One uncomfortable question: If you had never discovered trading, would you actually be poorer today?
 date: 2026-11-01
 journal: Crazy Journal
 tags:

@@ -76,7 +76,7 @@ export function getAllJournals(): JournalMeta[] {
       .map((p) => p.trim())
       .filter((p) => p && !p.startsWith("#") && !p.startsWith(">") && !p.startsWith("*"));
     const promotionalExcerpt = data.promotional_excerpt || data.promotionalExcerpt || "";
-    const excerpt = promotionalExcerpt || data.excerpt || proseParagraphs[0] || quote || "";
+    const excerpt = data.excerpt || proseParagraphs[0] || quote || "";
 
     const title = data.title || slug.replace(/-/g, " ");
     const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";
@@ -233,7 +233,7 @@ export function getJournalBySlug(slug: string): JournalFull | null {
     .map((p) => p.trim())
     .filter((p) => p && !p.startsWith("#") && !p.startsWith(">") && !p.startsWith("*"));
   const promotionalExcerpt = data.promotional_excerpt || data.promotionalExcerpt || "";
-  const excerpt = promotionalExcerpt || data.excerpt || proseParagraphs[0] || quote || "";
+  const excerpt = data.excerpt || proseParagraphs[0] || quote || "";
 
   const title = data.title || slug.replace(/-/g, " ");
   const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";

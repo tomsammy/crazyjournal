@@ -321,23 +321,15 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
                 </p>
               )}
 
-              {featured.promotionalExcerpt ? (
-                <div className="p-5 rounded-xl bg-orange-50/90 border-l-4 border-brand-accent text-gray-800 text-sm sm:text-base leading-relaxed whitespace-pre-line shadow-sm italic">
-                  {featured.promotionalExcerpt}
-                </div>
-              ) : (
-                <>
-                  {featured.quote && (
-                    <blockquote className="p-4 rounded-xl bg-white/80 border-l-4 border-nqq-coral text-gray-800 italic font-serif text-base shadow-sm">
-                      &ldquo;{featured.quote}&rdquo;
-                    </blockquote>
-                  )}
-
-                  <p className="text-gray-700 text-base leading-relaxed">
-                    {featured.excerpt}
-                  </p>
-                </>
+              {featured.quote && (
+                <blockquote className="p-4 rounded-xl bg-white/80 border-l-4 border-nqq-coral text-gray-800 italic font-serif text-base shadow-sm">
+                  &ldquo;{featured.quote}&rdquo;
+                </blockquote>
               )}
+
+              <p className="text-gray-700 text-base leading-relaxed">
+                {featured.excerpt}
+              </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
                 <Link

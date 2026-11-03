@@ -461,37 +461,6 @@ export default function JournalReaderClient({ journal }: Props) {
                 </button>
               </div>
             )}
-
-            {/* Author's Promotional Dispatch */}
-            {journal.promotionalExcerpt && (
-              <div className="mt-6 rounded-xl border border-orange-200 bg-gradient-to-br from-orange-50/80 via-white to-amber-50/40 p-6 shadow-sm">
-                <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-3 border-b border-orange-100">
-                  <div className="flex items-center gap-2 text-xs font-heading font-bold uppercase tracking-wider text-brand-accent">
-                    <Sparkles className="w-3.5 h-3.5 text-brand-accent" />
-                    <span>Author's Promotional Dispatch</span>
-                  </div>
-                  <button
-                    onClick={() => handleCopyQuote(journal.promotionalExcerpt!)}
-                    className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white border border-orange-200 hover:border-brand-accent text-brand-accent text-xs font-heading font-semibold shadow-sm transition-all"
-                  >
-                    {copiedQuote === journal.promotionalExcerpt ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700">Copied!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-3.5 h-3.5" />
-                        <span>Copy Pitch for Social</span>
-                      </>
-                    )}
-                  </button>
-                </div>
-                <div className="text-gray-800 text-sm sm:text-base leading-relaxed font-sans whitespace-pre-line italic">
-                  {journal.promotionalExcerpt}
-                </div>
-              </div>
-            )}
           </header>
 
           {/* Essay Body */}
