@@ -254,6 +254,10 @@ export function getJournalBySlug(slug: string): JournalFull | null {
   const created = data.created ? String(data.created) : (data.date ? String(data.date) : new Date().toISOString().split("T")[0]);
   const aliases = data.aliases || (data.description ? [data.description] : []);
 
+  const imageMatch = content.match(/!\[.*?\]\((.*?)\)/);
+  const defaultThumbnail = imageMatch ? imageMatch[1] : undefined;
+  const thumbnail = data.thumbnail || data.cover_image || data.image || defaultThumbnail || getDefaultThumbnailForSlug(slug);
+
   return {
     slug,
     title,
@@ -267,6 +271,7 @@ export function getJournalBySlug(slug: string): JournalFull | null {
     quote,
     excerpt,
     promotionalExcerpt,
+    thumbnail,
     rawContent: content,
     htmlContent,
     sections,
