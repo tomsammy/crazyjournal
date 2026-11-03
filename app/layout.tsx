@@ -151,7 +151,7 @@ export default function RootLayout({
 
             {/* Bottom Line */}
             <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3">
-              <p>&copy; 2026 The Crazy Journal. All Rights Reserved.</p>
+              <p>&copy; 2026 The Crazy Journal • Founded &amp; Edited by Adebayo Samuel Tomori. All Rights Reserved.</p>
               <p className="text-slate-400">
                 Inconvenient truths and thoughts that refuse to behave.
               </p>
