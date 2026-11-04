@@ -24,21 +24,37 @@ export function generateMetadata({ params }: Props) {
     return { title: "Journal Not Found — The Crazy Journal" };
   }
 
-  const images = journal.thumbnail ? [{ url: journal.thumbnail }] : [];
+  const ogImageUrl = journal.thumbnail
+    ? journal.thumbnail.startsWith("http")
+      ? journal.thumbnail
+      : `https://crazyjournal.ng${journal.thumbnail}`
+    : "https://crazyjournal.ng/images/journals/pigeon-linkedin.jpg";
+
+  const description = journal.subtitle || journal.quote || journal.excerpt;
 
   return {
     title: `${journal.title} — The Crazy Journal`,
-    description: journal.quote || journal.excerpt,
+    description,
     openGraph: {
       title: journal.title,
-      description: journal.quote || journal.excerpt,
-      images,
+      description,
+      url: `https://crazyjournal.ng/journals/${params.slug}`,
+      siteName: "The Crazy Journal",
+      type: "article",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: journal.title,
+        },
+      ],
     },
     twitter: {
       card: "summary_large_image",
       title: journal.title,
-      description: journal.quote || journal.excerpt,
-      images: journal.thumbnail ? [journal.thumbnail] : [],
+      description,
+      images: [ogImageUrl],
     },
   };
 }

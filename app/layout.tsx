@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BookOpen, Compass, Feather, Flame, Sparkles, ChevronRight, Mail, ArrowRight } from "lucide-react";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://crazyjournal.ng"),
   title: "The Crazy Journal — Inconvenient Truths, Brutal Reality & Cognitive Models",
   description: "An independent quarterly publication of long-form essays questioning human certainty, dogma, and the illusions of control.",
 };
