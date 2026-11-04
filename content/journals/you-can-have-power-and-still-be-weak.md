@@ -1,5 +1,5 @@
 ---
-thumbnail: "/images/journals/two-sides-of-me.png"
+thumbnail: "/images/journals/power-and-weakness.jpg"
 title: "YOU CAN HAVE POWER AND STILL BE WEAK. WHAT A TERRIBLE PARADOX."
 description: "The Uncomfortable Difference Between Power, Strength, Knowledge and Wisdom"
 aliases:
@@ -46,7 +46,7 @@ And I think this confusion explains a lot about the human condition.
 
 ## I. POWER IS WHAT YOU CAN DO. STRENGTH IS WHAT YOU CAN WITHSTAND
 
-![Two Sides Of Me — Public Power vs. Private Struggle](/images/journals/two-sides-of-me.png)
+![The Paradox of Power vs. Strength — The Burden of the Crown](/images/journals/power-and-weakness.jpg)
 
 Think about it.
 

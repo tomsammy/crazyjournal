@@ -47,7 +47,7 @@ function getDefaultThumbnailForSlug(slug: string): string {
   const map: Record<string, string> = {
     "uncertainty": "/images/journals/shattered-certainty.png",
     "god-did-not-give-you-a-brain-to-stop-using-it": "/images/journals/break-free.png",
-    "you-can-have-power-and-still-be-weak": "/images/journals/two-sides-of-me.png",
+    "you-can-have-power-and-still-be-weak": "/images/journals/power-and-weakness.jpg",
     "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
     "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
     "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
