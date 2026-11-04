@@ -17,9 +17,15 @@ import {
   Layers,
   Award,
   ChevronRight,
-  Send
+  Send,
+  Mail,
+  ShieldCheck,
+  Cpu,
+  BarChart3,
+  ExternalLink
 } from "lucide-react";
 import { JournalMeta } from "@/lib/journals";
+import { AUTHOR_DETAILS } from "@/lib/author";
 
 interface Props {
   initialJournals: JournalMeta[];
@@ -420,7 +426,141 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
         </section>
       )}
 
-      {/* 6. Newsletter / Reader Reflection Strip */}
+      {/* 6. Spotlight: About The Author & Founder */}
+      <section id="author" className="container mx-auto px-4 py-8">
+        <div className="relative rounded-3xl bg-gradient-to-br from-[#0A1120] via-[#0E182A] to-[#14233D] text-white p-8 sm:p-12 md:p-16 shadow-2xl border border-white/10 overflow-hidden">
+          {/* Subtle Ambient Radial Glow */}
+          <div className="absolute top-0 right-1/4 w-80 h-80 bg-brand-accent/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-10 left-10 w-72 h-72 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+
+          <div className="relative z-10 grid md:grid-cols-12 gap-10 md:gap-12 items-center">
+            {/* Author Portrait Column */}
+            <div className="md:col-span-4 flex flex-col items-center text-center">
+              <div className="relative group">
+                <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-brand-accent via-amber-400 to-blue-500 opacity-80 blur group-hover:opacity-100 transition-opacity" />
+                <img
+                  src={AUTHOR_DETAILS.avatar}
+                  alt={AUTHOR_DETAILS.name}
+                  className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-full object-cover border-4 border-[#0A1120] shadow-2xl"
+                />
+              </div>
+
+              <h3 className="mt-6 text-2xl font-extrabold font-heading text-white">
+                {AUTHOR_DETAILS.name}
+              </h3>
+              <p className="text-xs sm:text-sm text-brand-accent font-heading font-semibold uppercase tracking-wider mt-1">
+                Founder, Editor &amp; Systems Architect
+              </p>
+
+              {/* Direct LinkedIn & Email Buttons */}
+              <div className="flex items-center gap-3 mt-5">
+                <a
+                  href={AUTHOR_DETAILS.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0077b5] hover:bg-[#005f93] text-white text-xs font-heading font-bold shadow-md hover:shadow-lg transition-all"
+                >
+                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                  </svg>
+                  <span>LinkedIn Profile</span>
+                </a>
+
+                <a
+                  href={`mailto:${AUTHOR_DETAILS.email}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-slate-200 hover:text-white text-xs font-heading font-semibold transition-all"
+                >
+                  <Mail className="w-4 h-4" />
+                  <span>Contact</span>
+                </a>
+              </div>
+            </div>
+
+            {/* Author Narrative Column */}
+            <div className="md:col-span-8 space-y-6 text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-accent/20 border border-brand-accent/30 text-brand-accent text-xs font-heading font-bold uppercase tracking-wider">
+                <Feather className="w-3.5 h-3.5" />
+                <span>The Voice Behind The Journal</span>
+              </div>
+
+              <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-white leading-tight">
+                Dissecting Complexity Through Software, Defense &amp; Cognitive Models
+              </h2>
+
+              <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-sans">
+                {AUTHOR_DETAILS.extendedBio}
+              </p>
+
+              {/* Three Core Disciplines Pillars */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">
+                    <Cpu className="w-4 h-4" />
+                  </div>
+                  <h4 className="font-heading font-bold text-white text-sm">
+                    Software Architecture
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    15+ years engineering scalable enterprise systems, SaaS platforms (Edukate, Edupay), and student information systems (SkoolBoard).
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <h4 className="font-heading font-bold text-white text-sm">
+                    Defensive Security
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Certified network &amp; systems security instructor training engineers in threat defense, secure infrastructure, and zero-trust design.
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm space-y-2">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold">
+                    <BarChart3 className="w-4 h-4" />
+                  </div>
+                  <h4 className="font-heading font-bold text-white text-sm">
+                    Data &amp; Systems Logic
+                  </h4>
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    Synthesizing quantitative analytics with non-linear mental models to make rational decisions under uncertainty.
+                  </p>
+                </div>
+              </div>
+
+              {/* Proven Track Record / SaaS Products Footer */}
+              <div className="pt-4 border-t border-white/10 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-xs text-slate-400 font-mono font-medium">Platforms &amp; Initiatives:</span>
+                  {AUTHOR_DETAILS.products.map((p) => (
+                    <span
+                      key={p.name}
+                      className="px-2.5 py-1 rounded-md bg-white/10 text-slate-300 text-xs font-mono font-medium border border-white/10"
+                      title={p.desc}
+                    >
+                      {p.name}
+                    </span>
+                  ))}
+                </div>
+
+                <a
+                  href={AUTHOR_DETAILS.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-heading font-semibold text-brand-accent hover:text-white transition-colors inline-flex items-center gap-1 group/lnk"
+                >
+                  <span>View Full Professional Journey on LinkedIn</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover/lnk:translate-x-1 transition-transform" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 7. Newsletter / Reader Reflection Strip */}
       <section className="container mx-auto px-4">
         <div className="py-16 px-6 sm:px-12 rounded-2xl bg-gradient-to-r from-[#0A1120] via-[#0E182A] to-[#14233D] text-white text-center shadow-xl space-y-6">
           <span className="px-3 py-1 rounded-full bg-brand-accent text-white font-heading font-bold text-xs uppercase tracking-wider">

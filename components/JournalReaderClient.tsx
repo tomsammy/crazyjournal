@@ -25,9 +25,11 @@ import {
   Calendar,
   Clock,
   User,
+  Mail,
   ExternalLink
 } from "lucide-react";
 import { JournalFull, JournalSection } from "@/lib/journals";
+import { AUTHOR_DETAILS } from "@/lib/author";
 
 interface Props {
   journal: JournalFull;
@@ -734,19 +736,46 @@ export default function JournalReaderClient({ journal }: Props) {
             )}
 
             {/* Metadata Bar */}
-            <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs sm:text-sm text-gray-500 pt-2">
-              <span className="flex items-center font-medium">
-                <User className="mr-1.5 h-4 w-4 text-nqq-coral" />
-                Adebayo Samuel Tomori
-              </span>
-              <span className="flex items-center">
-                <Clock className="mr-1.5 h-4 w-4 text-nqq-coral" />
-                {journal.readingTime}
-              </span>
-              <span className="flex items-center">
-                <Calendar className="mr-1.5 h-4 w-4 text-nqq-coral" />
-                {journal.created}
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-y-4 gap-x-6 text-xs sm:text-sm text-gray-500 pt-4 border-t border-gray-100">
+              <div className="flex items-center gap-3">
+                <img
+                  src={AUTHOR_DETAILS.avatar}
+                  alt={AUTHOR_DETAILS.name}
+                  className="w-10 h-10 rounded-full object-cover border-2 border-nqq-coral shadow-sm"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-heading font-bold text-nqq-blue text-sm">
+                      {AUTHOR_DETAILS.name}
+                    </span>
+                    <a
+                      href={AUTHOR_DETAILS.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#0077b5] hover:opacity-80 transition-opacity"
+                      title="LinkedIn Profile"
+                    >
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                    </a>
+                  </div>
+                  <span className="text-[11px] text-gray-500 font-sans block">
+                    {AUTHOR_DETAILS.role}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-xs font-mono text-gray-500">
+                <span className="flex items-center">
+                  <Clock className="mr-1.5 h-3.5 w-3.5 text-nqq-coral" />
+                  {journal.readingTime}
+                </span>
+                <span className="flex items-center">
+                  <Calendar className="mr-1.5 h-3.5 w-3.5 text-nqq-coral" />
+                  {journal.created}
+                </span>
+              </div>
             </div>
 
             {/* Captivating Post Thumbnail / Hero Visual Banner */}
@@ -912,6 +941,69 @@ export default function JournalReaderClient({ journal }: Props) {
               </section>
             ))}
           </article>
+
+          {/* Author Profile Bio Card */}
+          <div className="mt-16 pt-10 border-t border-gray-200">
+            <div className="rounded-2xl border border-gray-200 bg-gradient-to-br from-slate-50 via-white to-orange-50/30 p-6 sm:p-8 shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6 text-left">
+              <img
+                src={AUTHOR_DETAILS.avatar}
+                alt={AUTHOR_DETAILS.name}
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border-4 border-white shadow-lg flex-shrink-0"
+              />
+              <div className="space-y-3 flex-1">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[11px] font-heading font-bold uppercase tracking-wider text-nqq-coral block">
+                      About the Author &amp; Editor
+                    </span>
+                    <h3 className="text-xl sm:text-2xl font-heading font-extrabold text-nqq-blue">
+                      {AUTHOR_DETAILS.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-gray-600 font-medium">
+                      {AUTHOR_DETAILS.role}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={AUTHOR_DETAILS.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#0077b5] text-white text-xs font-heading font-bold shadow hover:bg-[#005f93] transition-all"
+                    >
+                      <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                      </svg>
+                      <span>Connect on LinkedIn</span>
+                    </a>
+
+                    <a
+                      href={`mailto:${AUTHOR_DETAILS.email}`}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-heading font-semibold shadow-sm transition-all"
+                    >
+                      <Mail className="w-3.5 h-3.5 text-gray-500" />
+                      <span>Email</span>
+                    </a>
+                  </div>
+                </div>
+
+                <p className="text-gray-700 text-sm leading-relaxed font-sans">
+                  {AUTHOR_DETAILS.bio}
+                </p>
+
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {AUTHOR_DETAILS.disciplines.map((d) => (
+                    <span
+                      key={d}
+                      className="px-2.5 py-1 rounded-md bg-white border border-gray-200 text-gray-600 text-[11px] font-mono font-medium shadow-xs"
+                    >
+                      {d}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* 4-Part Sparring Chamber (Styled in NileQuest Editorial Theme) */}
           <div id="sparring" className="mt-16 rounded-2xl border-t-4 border-nqq-blue border-x border-b border-gray-200 bg-gradient-to-br from-blue-50/50 via-white to-red-50/30 p-6 sm:p-10 font-sans shadow-lg">
