@@ -49,6 +49,7 @@ function getDefaultThumbnailForSlug(slug: string): string {
     "god-did-not-give-you-a-brain-to-stop-using-it": "/images/journals/break-free.png",
     "you-can-have-power-and-still-be-weak": "/images/journals/power-and-weakness.jpg",
     "the-pigeon-is-still-shitting-it-just-has-a-better-linkedin-profile": "/images/journals/pigeon-linkedin.jpg",
+    "the-absalom-pattern-they-want-your-seat": "/images/journals/absalom-pattern.jpg",
     "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
     "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
     "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
