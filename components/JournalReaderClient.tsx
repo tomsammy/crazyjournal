@@ -43,6 +43,70 @@ interface SparResult {
   operationalShift: string;
 }
 
+function renderInlineFormatting(text: string): React.ReactNode {
+  const tokens: React.ReactNode[] = [];
+  const regex = /(\[([^\]]+)\]\s*\(([^)]+)\)|\*\*([^*]+)\*\*|\*([^*]+)\*|`([^`]+)`)/g;
+
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      tokens.push(text.slice(lastIndex, match.index));
+    }
+
+    if (match[2] && match[3]) {
+      const linkText = match[2];
+      const linkHref = match[3].trim();
+      const isExternal = linkHref.startsWith("http://") || linkHref.startsWith("https://");
+
+      tokens.push(
+        <a
+          key={`lnk-${match.index}`}
+          href={linkHref}
+          target={isExternal ? "_blank" : undefined}
+          rel={isExternal ? "noopener noreferrer" : undefined}
+          className="text-nqq-coral hover:text-nqq-blue underline decoration-nqq-coral/60 hover:decoration-nqq-blue underline-offset-4 font-semibold transition-colors inline-flex items-center gap-1 group/inline-link"
+        >
+          <span>{linkText}</span>
+          {isExternal && (
+            <ExternalLink className="w-3.5 h-3.5 inline text-nqq-coral group-hover/inline-link:text-nqq-blue opacity-80" />
+          )}
+        </a>
+      );
+    } else if (match[4]) {
+      tokens.push(
+        <strong key={`b-${match.index}`} className="font-bold text-nqq-blue">
+          {match[4]}
+        </strong>
+      );
+    } else if (match[5]) {
+      tokens.push(
+        <em key={`i-${match.index}`} className="italic">
+          {match[5]}
+        </em>
+      );
+    } else if (match[6]) {
+      tokens.push(
+        <code
+          key={`c-${match.index}`}
+          className="px-1.5 py-0.5 rounded bg-gray-100 font-mono text-sm text-nqq-coral border border-gray-200"
+        >
+          {match[6]}
+        </code>
+      );
+    }
+
+    lastIndex = regex.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    tokens.push(text.slice(lastIndex));
+  }
+
+  return tokens.length > 0 ? tokens : text;
+}
+
 
 function cleanMarkdownForSpeech(text: string): string {
   return text
@@ -849,7 +913,7 @@ export default function JournalReaderClient({ journal }: Props) {
                           key={pIdx}
                           className="relative group p-6 my-6 rounded-xl bg-blue-50/60 border-l-4 border-nqq-blue text-nqq-blue font-heading font-bold text-lg sm:text-xl leading-relaxed shadow-sm flex items-start justify-between gap-4 clear-both"
                         >
-                          <span>{inner}</span>
+                          <span>{renderInlineFormatting(inner)}</span>
                           <button
                             onClick={() => handleCopyQuote(inner)}
                             className="opacity-40 group-hover:opacity-100 transition-opacity p-2 rounded-lg bg-white hover:bg-gray-50 text-nqq-coral border border-gray-200 flex-shrink-0 shadow-sm"
@@ -872,7 +936,7 @@ export default function JournalReaderClient({ journal }: Props) {
                           key={pIdx}
                           className="p-4 my-5 border-l-4 border-nqq-coral bg-gray-50/80 italic font-serif text-gray-800 rounded-r-lg clear-both"
                         >
-                          {trimmed.replace(/^>\s*/, "")}
+                          {renderInlineFormatting(trimmed.replace(/^>\s*/, ""))}
                         </blockquote>
                       );
                     }
@@ -904,7 +968,7 @@ export default function JournalReaderClient({ journal }: Props) {
 
                     return (
                       <p key={pIdx} className="mb-5">
-                        {trimmed}
+                        {renderInlineFormatting(trimmed)}
                       </p>
                     );
                   })}
