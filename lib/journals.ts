@@ -51,6 +51,7 @@ function getDefaultThumbnailForSlug(slug: string): string {
     "the-pigeon-is-still-shitting-it-just-has-a-better-linkedin-profile": "/images/journals/pigeon-linkedin.jpg",
     "the-absalom-pattern-they-want-your-seat": "/images/journals/absalom-pattern.jpg",
     "israel-voted-nobody-won-now-everybody-wants-to-define-democracy": "/images/journals/shattered-certainty.png",
+    "you-dont-want-freedom-you-want-permission-to-be-yourself": "/images/journals/courage-to-be-disliked.jpg",
     "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
     "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
     "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
