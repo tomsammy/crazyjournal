@@ -52,6 +52,7 @@ function getDefaultThumbnailForSlug(slug: string): string {
     "the-absalom-pattern-they-want-your-seat": "/images/journals/absalom-pattern.jpg",
     "israel-voted-nobody-won-now-everybody-wants-to-define-democracy": "/images/journals/shattered-certainty.png",
     "you-dont-want-freedom-you-want-permission-to-be-yourself": "/images/journals/courage-to-be-disliked.jpg",
+    "you-helped-build-the-company-the-company-can-still-decide-it-doesnt-need-you": "/images/journals/shattered-certainty.png",
     "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
     "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
     "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
