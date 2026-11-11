@@ -38,7 +38,11 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
   const [newsletterEmail, setNewsletterEmail] = useState("");
   const [subscribed, setSubscribed] = useState(false);
 
-  const featured = initialJournals[0]; // Flagship journal (e.g. Uncertainty or Binary Options)
+  const [featuredSlug, setFeaturedSlug] = useState<string>(
+    initialJournals.find((j) => j.slug === "you-can-have-power-and-still-be-weak")?.slug ||
+    initialJournals[0]?.slug || ""
+  );
+  const featured = initialJournals.find((j) => j.slug === featuredSlug) || initialJournals[0];
 
   // Filter journals based on search query and selected tag
   const filteredJournals = useMemo(() => {
@@ -71,43 +75,141 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
 
   return (
     <div className="space-y-16 pb-12">
-      {/* 1. NileQuest Quarterly Style Hero Section */}
-      <section className="relative py-20 md:py-32 text-center text-white bg-gradient-to-r from-[#0A1120] via-[#0E182A] to-[#14233D] shadow-2xl overflow-hidden">
-        {/* Background Overlay */}
-        <div className="absolute inset-0 bg-black opacity-35" />
+      {/* 1. Pinaade-Style Editorial Magazine Cover Feature Hero */}
+      <section id="featured" className="container mx-auto px-4 pt-4 sm:pt-6">
+        <div className="rounded-3xl bg-gradient-to-br from-[#060D1F] via-[#091538] to-[#0E1E4A] border border-white/15 shadow-2xl overflow-hidden grid md:grid-cols-12 min-h-[540px]">
+          
+          {/* Left Column: Full-Bleed Magazine Cover Photo */}
+          <div className="relative md:col-span-5 lg:col-span-5 min-h-[380px] md:min-h-full overflow-hidden group">
+            <img
+              src={featured?.thumbnail || "/images/journals/power-and-weakness.jpg"}
+              alt={featured?.title || "Cover Feature"}
+              className="absolute inset-0 w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700"
+            />
+            
+            {/* Cinematic Gradient Overlays for Readability */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-black/75" />
+            
+            {/* Masthead & Badge Overlay in Top-Left Corner */}
+            <div className="absolute top-6 left-6 sm:top-8 sm:left-8 z-10 flex flex-col items-start">
+              <span className="px-2.5 py-1 rounded bg-[#F05438] text-white font-heading font-extrabold text-[10px] sm:text-xs uppercase tracking-widest shadow-md">
+                COVER FEATURE
+              </span>
+              <h2 className="mt-2.5 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black font-heading tracking-tighter text-white drop-shadow-xl uppercase leading-none">
+                THE CRAZY<br />JOURNAL
+              </h2>
+            </div>
 
-        {/* Ambient Glow */}
-        <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-brand-accent/20 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 container mx-auto px-4 max-w-4xl">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-heading font-semibold text-slate-200 uppercase tracking-widest mb-6">
-            <Feather className="w-3.5 h-3.5 text-brand-accent" />
-            <span>Quarterly Essay Series • October 2026</span>
+            {/* Bottom Photo Issue Pill */}
+            <div className="absolute bottom-5 left-6 right-6 z-10 flex items-center justify-between text-white/80 text-xs font-mono">
+              <span className="text-[11px] font-heading font-semibold text-nqq-coral uppercase tracking-wider">
+                Quarterly Publication
+              </span>
+              <span className="text-[11px] text-slate-300">
+                Vol. I • Issue 1
+              </span>
+            </div>
           </div>
 
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold mb-6 font-heading drop-shadow-lg leading-tight">
-            <span className="gradient-text">The Crazy Journal</span>: Truth Without Guarantees
-          </h1>
+          {/* Right Column: Editorial Essay Narrative */}
+          <div className="md:col-span-7 lg:col-span-7 p-6 sm:p-10 md:p-12 lg:p-14 flex flex-col justify-between text-white space-y-6">
+            <div className="space-y-4">
+              {/* Issue Sub-header */}
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-heading font-bold text-nqq-coral uppercase tracking-widest">
+                  VOL. I • ESSAY SERIES
+                </span>
+                <span className="w-1.5 h-1.5 rounded-full bg-nqq-coral" />
+                <span className="text-xs text-slate-400 font-mono">
+                  {featured?.created}
+                </span>
+              </div>
 
-          <p className="text-lg sm:text-xl md:text-2xl mb-10 max-w-3xl mx-auto text-slate-200 drop-shadow-md leading-relaxed font-sans">
-            Uncomfortable questions, inconvenient truths, and mental models that refuse to behave.
-            Confronting human certainty with brutal reality.
-          </p>
+              {/* Big Bold Headline */}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black font-heading text-white tracking-tight leading-[1.12]">
+                {featured?.title.split("—")[0].trim()}
+              </h1>
 
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-            <Link
-              href={`/journals/${featured?.slug || "you-can-have-power-and-still-be-weak"}`}
-              className="w-full sm:w-auto px-8 py-3.5 rounded-lg bg-brand-accent hover:bg-brand-accent-hover text-white font-heading font-bold text-base shadow-lg shadow-orange-500/25 transition-all transform hover:-translate-y-0.5 inline-flex items-center justify-center gap-2"
-            >
-              <span>Read Featured Issue</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-            <Link
-              href="#essays"
-              className="w-full sm:w-auto px-8 py-3.5 rounded-lg border-2 border-white text-white hover:bg-white hover:text-brand-primary font-heading font-bold text-base transition-all inline-flex items-center justify-center gap-2"
-            >
-              <span>Browse All Insights</span>
-            </Link>
+              {/* Subtitle in Coral */}
+              {featured?.subtitle && (
+                <p className="text-base sm:text-lg lg:text-xl font-heading font-semibold text-nqq-coral leading-snug">
+                  {featured?.subtitle}
+                </p>
+              )}
+
+              {/* Editorial Narrative / Excerpt */}
+              <p className="text-slate-200/90 text-sm sm:text-base leading-relaxed font-sans pt-2 max-w-2xl line-clamp-6 sm:line-clamp-none">
+                {featured?.excerpt}
+              </p>
+            </div>
+
+            {/* Bottom: Author Metadata + Action Buttons */}
+            <div className="pt-6 border-t border-white/10 space-y-5">
+              {/* Metadata Line */}
+              <div className="flex flex-wrap items-center gap-y-2 gap-x-6 text-xs text-slate-300 font-sans">
+                <span className="flex items-center gap-1.5 font-medium text-slate-200">
+                  <Feather className="w-3.5 h-3.5 text-nqq-coral" />
+                  <span>{AUTHOR_DETAILS.name}, Editor</span>
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-nqq-coral" />
+                  <span>{featured?.readingTime}</span>
+                </span>
+                <span className="text-slate-400 font-mono">
+                  Winter 2026
+                </span>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3.5 pt-1">
+                <Link
+                  href={`/journals/${featured?.slug}`}
+                  className="px-6 py-3 rounded-xl bg-nqq-coral hover:bg-orange-600 text-white font-heading font-bold text-sm shadow-lg shadow-orange-500/25 transition-all inline-flex items-center gap-2 transform hover:-translate-y-0.5"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  <span>Read Issue</span>
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+
+                <Link
+                  href={`/journals/${featured?.slug}#sparring`}
+                  className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-heading font-semibold text-sm backdrop-blur-sm transition-all inline-flex items-center gap-2"
+                >
+                  <Flame className="w-4 h-4 text-nqq-coral" />
+                  <span>Sparring Chamber</span>
+                </Link>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Featured Cover Story Switcher Carousel */}
+        <div className="mt-4 flex items-center justify-between gap-3 overflow-x-auto pb-2 scrollbar-none">
+          <span className="text-[11px] font-heading font-bold uppercase tracking-wider text-gray-500 whitespace-nowrap pl-1">
+            Featured Stories:
+          </span>
+          <div className="flex items-center gap-2">
+            {initialJournals.slice(0, 6).map((j) => {
+              const isActive = j.slug === featured.slug;
+              return (
+                <button
+                  key={j.slug}
+                  onClick={() => setFeaturedSlug(j.slug)}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-heading font-semibold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+                    isActive
+                      ? "bg-nqq-blue text-white shadow-sm"
+                      : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                  }`}
+                >
+                  <span className={`w-2 h-2 rounded-full ${isActive ? "bg-nqq-coral" : "bg-gray-300"}`} />
+                  <span className="truncate max-w-[130px] sm:max-w-[180px]">
+                    {j.title.split(":")[0].split("—")[0].trim()}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -327,104 +429,7 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
         )}
       </section>
 
-      {/* 5. NileQuest Quarterly Featured Issue Banner */}
-      {featured && (
-        <section id="featured" className="container mx-auto px-4 py-16 bg-gradient-to-r from-blue-50 to-red-50 rounded-2xl shadow-xl my-12">
-          <div className="grid md:grid-cols-12 gap-10 items-center">
-            {/* Left Content */}
-            <div className="md:col-span-7 space-y-5">
-              <span className="px-3 py-1 rounded-full bg-nqq-coral text-white font-heading font-bold text-xs uppercase tracking-wider">
-                Featured Quarterly Issue
-              </span>
 
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-nqq-blue font-heading leading-tight">
-                {featured.title}
-              </h2>
-
-              {featured.subtitle && (
-                <p className="text-xl text-nqq-coral font-heading font-semibold">
-                  {featured.subtitle}
-                </p>
-              )}
-
-              {featured.quote && (
-                <blockquote className="p-4 rounded-xl bg-white/80 border-l-4 border-nqq-coral text-gray-800 italic font-serif text-base shadow-sm">
-                  &ldquo;{featured.quote}&rdquo;
-                </blockquote>
-              )}
-
-              <p className="text-gray-700 text-base leading-relaxed">
-                {featured.excerpt}
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                <Link
-                  href={`/journals/${featured.slug}`}
-                  className="px-6 py-3 rounded-lg bg-nqq-blue hover:bg-blue-900 text-white font-heading font-bold text-sm shadow-md transition-all inline-flex items-center justify-center gap-2"
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span>Read Online</span>
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-
-                <Link
-                  href={`/journals/${featured.slug}#sparring`}
-                  className="px-6 py-3 rounded-lg border-2 border-nqq-blue text-nqq-blue hover:bg-nqq-blue hover:text-white font-heading font-bold text-sm transition-all inline-flex items-center justify-center gap-2"
-                >
-                  <Flame className="w-4 h-4 text-nqq-coral" />
-                  <span>Open Sparring Chamber</span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Right: NileQuest Quarterly Styled Cover Card Mockup */}
-            <div className="md:col-span-5 flex justify-center">
-              <div className="w-full max-w-sm rounded-2xl bg-gradient-to-br from-nqq-blue via-[#0a1128] to-blue-950 p-6 sm:p-7 shadow-2xl border-4 border-nqq-coral/30 flex flex-col justify-between text-white relative overflow-hidden group hover:scale-[1.02] transition-transform">
-                <div className="absolute top-0 right-0 w-32 h-32 bg-nqq-coral/20 rounded-full blur-2xl" />
-
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between border-b border-white/20 pb-3">
-                    <span className="font-heading font-bold tracking-widest text-xs uppercase text-nqq-coral">
-                      Vol. I • Issue 1
-                    </span>
-                    <span className="text-xs text-blue-200 font-mono">
-                      {featured.created}
-                    </span>
-                  </div>
-
-                  {featured.thumbnail && (
-                    <div className="relative aspect-[16/10] rounded-xl overflow-hidden bg-slate-900 border border-white/10 shadow-inner">
-                      <img
-                        src={featured.thumbnail}
-                        alt={featured.title}
-                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    </div>
-                  )}
-
-                  <h3 className="text-xl sm:text-2xl font-extrabold font-heading text-white leading-tight">
-                    {featured.title.split("—")[0].trim()}
-                  </h3>
-
-                  <p className="text-xs text-blue-200 line-clamp-2 leading-relaxed">
-                    {featured.subtitle || featured.excerpt}
-                  </p>
-                </div>
-
-                <div className="pt-4 mt-4 border-t border-white/20 flex items-center justify-between text-xs">
-                  <span className="font-heading font-semibold text-nqq-coral">
-                    The Crazy Journal
-                  </span>
-                  <span className="text-blue-300">
-                    {featured.readingTime}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* 6. Spotlight: About The Author & Founder */}
       <section id="author" className="container mx-auto px-4 py-8">
