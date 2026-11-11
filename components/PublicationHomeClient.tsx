@@ -292,75 +292,25 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
         </div>
       </section>
 
-      {/* 4. "Fresh Perspectives: Insights" (The Essay Grid) */}
-      <section id="essays" className="container mx-auto px-4 pt-12 space-y-8">
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <h2 className="text-3xl sm:text-4xl font-bold text-nqq-blue font-heading">
-            Fresh Perspectives: Insights
-          </h2>
-          <p className="text-gray-600 text-sm">
-            Read complete long-form essays and mental models. Filter by keyword or thematic tag.
-          </p>
-        </div>
-
-        {/* Live Search and Tag Filter Bar */}
-        <div className="max-w-2xl mx-auto space-y-4">
-          <div className="relative">
-            <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search essays, paradoxes, keywords..."
-              className="w-full pl-12 pr-4 py-3 rounded-xl bg-white border border-gray-300 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:border-nqq-coral focus:ring-2 focus:ring-nqq-coral/20 shadow-sm transition-all"
-            />
+      {/* 4. Complete Essay Archive */}
+      <section id="essays" className="container mx-auto px-4 pt-10 space-y-6">
+        <div className="flex items-center justify-between border-b border-gray-200 pb-4">
+          <div>
+            <h2 className="text-2xl sm:text-3xl font-bold text-nqq-blue font-heading tracking-tight">
+              All Essays & Dispatches
+            </h2>
+            <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
+              Complete archive of radical reality testing, leadership critiques, and mental models.
+            </p>
           </div>
-
-          {/* Tag Pills */}
-          <div className="flex flex-wrap justify-center gap-2">
-            <button
-              onClick={() => setSelectedTag("all")}
-              className={`text-xs px-3.5 py-1.5 rounded-full font-heading font-semibold transition-all ${
-                selectedTag === "all"
-                  ? "bg-nqq-blue text-white shadow-md"
-                  : "bg-white text-gray-600 hover:text-nqq-blue border border-gray-200"
-              }`}
-            >
-              #all
-            </button>
-            {allTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setSelectedTag(tag)}
-                className={`text-xs px-3.5 py-1.5 rounded-full font-heading font-semibold transition-all ${
-                  selectedTag === tag
-                    ? "bg-nqq-coral text-white shadow-md"
-                    : "bg-white text-gray-600 hover:text-nqq-coral border border-gray-200"
-                }`}
-              >
-                #{tag}
-              </button>
-            ))}
-          </div>
+          <span className="text-xs font-mono font-bold text-nqq-coral uppercase tracking-wider bg-orange-50 border border-orange-200/60 px-3.5 py-1.5 rounded-full whitespace-nowrap">
+            {initialJournals.length} Issues
+          </span>
         </div>
 
         {/* Essay Cards (3-Column Grid) */}
-        {filteredJournals.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200 max-w-md mx-auto">
-            <p className="text-gray-500 text-sm">No essays found matching your search.</p>
-            <button
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedTag("all");
-              }}
-              className="text-xs text-nqq-coral font-bold mt-2 hover:underline"
-            >
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pt-4">
-            {filteredJournals.map((j) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 pt-2">
+          {initialJournals.map((j) => (
               <article
                 key={j.slug}
                 className="group flex flex-col justify-between h-full overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 hover:border-nqq-coral/40 bg-white"
@@ -426,7 +376,6 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
               </article>
             ))}
           </div>
-        )}
       </section>
 
 
