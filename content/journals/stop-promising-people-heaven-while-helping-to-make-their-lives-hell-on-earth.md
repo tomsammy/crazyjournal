@@ -464,30 +464,264 @@ Between prayer and practical help.
 
 Between spiritual transformation and social responsibility.
 
-### 9. A faith that refuses to look away from suffering.
+Between hope for eternity and responsibility in the present.
 
-The true test of Christian faith has never been our ability to describe heaven in poetic terms.
+The biblical account gives us reasons to take all these things seriously.
 
-It is our willingness to confront hell on earth with practical compassion.
+Jesus announces God's kingdom.
 
-If our gospel only works when people are dead, it isn't the gospel of Jesus.
+He calls people to repentance.
 
-Jesus did not stand at a safe distance from human agony, delivering speeches about eternal rewards while stepping over wounded bodies on the road to Jericho.
+He teaches about eternal life.
 
-He stopped.
+And he demonstrates compassion through concrete actions.
 
-He touched the leper.
+There is no need to erase one dimension to defend another.
 
-He fed the hungry.
+But there is every reason to question a version of Christianity that makes one dimension an excuse for neglecting the rest.
 
-He called religious leaders hypocrites when they prioritized legalistic prestige over justice, mercy and faithfulness.
+**The gospel cannot be reduced to a political manifesto. But neither should it be reduced to a heavenly travel brochure.**
 
-If we want to preach Jesus, we must be willing to live like him.
+### 9. Perhaps the greatest problem is that Christianity has become easier to profess than to practise.
 
-That means praying with our knees, but also serving with our hands.
+I've been asking myself a question.
 
-That means offering hope for eternity, while fighting with every ounce of our strength against the conditions that make someone's present existence unbearable.
+What would happen if we measured Christian maturity differently?
 
-And until we are willing to do that, perhaps we should be a little more humble with our theology.
+Not by how loudly someone prays.
 
-Because God is not impressed by how loudly we promise people heaven when our indifference is helping to make their lives hell on earth.
+Not by how many scriptures they can quote.
+
+Not by how often they attend services.
+
+Not by how respected they are in their religious circles.
+
+But by what happens when their faith encounters another person's suffering.
+
+Do they become more compassionate?
+
+More honest?
+
+More generous?
+
+More willing to take responsibility?
+
+More concerned about justice?
+
+More capable of recognising the humanity of people who don't share their religious beliefs?
+
+Or do they simply become more proficient at religious performance?
+
+This is a difficult question because religious activity can create the feeling of spiritual progress.
+
+You attend a conference.
+
+You fast.
+
+You give offerings.
+
+You participate in an all-night prayer meeting.
+
+You listen to powerful preaching.
+
+And all of those activities may have genuine spiritual significance.
+
+But they can also become a substitute for confronting your own behaviour.
+
+**You can become exceptionally knowledgeable about the teachings of Jesus while remaining remarkably resistant to living like him.**
+
+And I think that possibility should disturb us.
+
+It certainly disturbs me.
+
+Because it's much easier to write passionately about justice than to act justly when doing so costs me something.
+
+It's easier to condemn selfish religious leaders than to examine my own selfishness.
+
+It's easier to criticise wealthy churches than to ask what proportion of my own resources I'm willing to share.
+
+And it's easier to demand that institutions care for the vulnerable than to confront the vulnerable people I personally have the capacity to help.
+
+The criticism must apply to me too.
+
+Otherwise, I've simply created another opportunity to sound morally superior.
+
+### 10. What if the people we're trying to evangelise are waiting to see whether we actually believe what we preach?
+
+Imagine someone who has heard the gospel repeatedly.
+
+They know the songs.
+
+They know the language.
+
+They've heard about God's love, mercy, provision and compassion.
+
+But they've also seen religious people behave with extraordinary cruelty.
+
+They've seen leaders evade accountability.
+
+They've seen vulnerable people neglected.
+
+They've watched some Christians defend injustice when the person responsible belongs to their religious community.
+
+Then we approach them again with another invitation to accept Jesus.
+
+And we're surprised when they appear sceptical.
+
+Now, hypocrisy doesn't automatically disprove a religious belief.
+
+The failures of Christians do not logically settle the truth or falsehood of Christianity.
+
+But they absolutely affect the credibility of Christian witness.
+
+**People may reject a message not because they have carefully disproved its theology, but because they've repeatedly encountered behaviour that contradicts it.**
+
+And perhaps we should take that seriously.
+
+If we claim that love is central to our faith, then love should be visible in our conduct.
+
+If we claim that every person possesses dignity, then dignity should shape how we treat people without wealth, status or influence.
+
+If we claim that truth matters, then truth should matter even when it embarrasses our religious leaders.
+
+And if we claim that Jesus is our example, then following him should involve more than defending his name in arguments.
+
+It should involve examining how we live.
+
+### My final thought: maybe God is not impressed by how passionately we describe a heaven we refuse to reflect on earth.
+
+I've come to a troubling conclusion.
+
+**It is possible to be deeply religious and dangerously indifferent to human suffering.**
+
+It is possible to speak passionately about eternity while avoiding responsibility in the present.
+
+It is possible to believe in divine justice while tolerating injustice whenever challenging it would be inconvenient.
+
+And it is possible to organise an entire religious life around personal salvation while barely considering what love requires of us towards other people.
+
+That's frightening.
+
+Not because the hope of heaven is wrong.
+
+But because the hope of heaven should not make us indifferent to earth.
+
+Christianity teaches that God values human beings.
+
+Not merely their disembodied souls.
+
+Human beings.
+
+With bodies.
+
+Needs.
+
+Relationships.
+
+Dignity.
+
+And lives that matter now.
+
+The hungry person isn't simply a potential convert.
+
+The sick person isn't merely an opportunity to demonstrate spiritual power.
+
+The poor person isn't a prop in somebody's sermon about generosity.
+
+The marginalised person isn't a religious project.
+
+**They are human beings whose suffering matters whether or not they ever join your church.**
+
+And if we truly believe that people bear God's image, then their value cannot depend on whether they accept our invitation to a religious service.
+
+We should be able to help someone without making their gratitude or conversion the price of our compassion.
+
+We should be able to challenge injustice even when the victims don't share our beliefs.
+
+We should be able to care for creation without treating environmental responsibility as a distraction from God.
+
+And we should be able to recognise that genuine Christian discipleship involves responsibilities that extend far beyond the boundaries of church buildings.
+
+So here's the uncomfortable question I'm leaving in The Crazy Journal:
+
+**IF JESUS WALKED INTO OUR CHURCHES TODAY, WOULD HE RECOGNISE THE KINGDOM HE PREACHED, OR WOULD HE FIND AN INDUSTRY BUILT AROUND HIS NAME?**
+
+Would he recognise compassion?
+
+Justice?
+
+Humility?
+
+Love?
+
+Would he find communities willing to sacrifice for the vulnerable?
+
+Or would he find people who have become remarkably skilled at celebrating him while avoiding the difficult implications of following him?
+
+I don't claim to know exactly what Jesus would say about every modern institution.
+
+But the Gospels give us more than enough material to examine ourselves.
+
+And perhaps we need to stop asking only how many people accepted Jesus at the last programme.
+
+Perhaps we should also ask how many hungry people were fed.
+
+How many vulnerable people were protected.
+
+How many struggling families received meaningful support.
+
+How many injustices were challenged.
+
+How many people experienced dignity rather than humiliation.
+
+How many of our religious priorities actually reflected the values we claim to defend.
+
+Not because good works purchase salvation.
+
+Not because Christianity is merely humanitarianism.
+
+But because **a faith that speaks endlessly about love while remaining indifferent to suffering has a serious credibility problem.**
+
+I don't want a Christianity that is only concerned with what happens to people after they die.
+
+I want one that takes seriously how people are treated while they're alive.
+
+I don't want a gospel that only teaches the oppressed how to endure suffering.
+
+I want one that also challenges those who profit from that suffering.
+
+And I don't want to spend my life singing about a kingdom of justice while becoming comfortable with injustice whenever opposing it threatens my interests.
+
+Because the Christian prayer isn't merely that human beings should eventually reach heaven.
+
+It also includes a plea for God's will to be done on earth.
+
+And perhaps we've repeated that prayer so many times that we've stopped considering its implications.
+
+**What if the very changes we're asking God to bring about are changes we're refusing to participate in?**
+
+What if the neighbour we're praying for is waiting for someone willing to act?
+
+What if the hungry person we've been encouraging to have faith also needs someone to share their food?
+
+What if our obsession with reaching heaven has become a convenient way of avoiding the responsibilities of living on earth?
+
+These are not comfortable questions.
+
+But I think they deserve to be asked.
+
+Because there's something deeply contradictory about claiming to follow a Christ who entered human suffering while constructing a religion that teaches us to look away from it.
+
+And perhaps the greatest tragedy would be this:
+
+**We spent our entire lives telling people how to get to heaven, but never seriously asked whether our presence made life on earth any less unbearable for them.**
+
+Think about that.
+
+Because if the gospel we preach has absolutely no implications for how we treat people here and now, perhaps we need to examine what we have understood about that gospel.
+
+**You cannot claim to be bringing heaven to earth while being comfortably indifferent to the hell people are experiencing around you.**
+
+---
+
+*The Crazy Journal — where faith is not exempt from uncomfortable questions, and religious language is never a substitute for human responsibility.*
