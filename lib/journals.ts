@@ -79,14 +79,15 @@ export function getAllJournals(): JournalMeta[] {
     const slug = fileName.replace(/\.md$/, "");
     const fullPath = path.join(JOURNALS_DIR, fileName);
     const fileContents = fs.readFileSync(fullPath, "utf8");
-    const { data, content } = matter(fileContents);
+    const { data, content: rawContentStr } = matter(fileContents);
+    const content = rawContentStr.replace(/\r\n/g, "\n");
 
     const wordCount = content.trim().split(/\s+/).length;
     const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
     const readingTime = `${readingMinutes} min read`;
 
     // Extract leading blockquote if present
-    const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/);
+    const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/m);
     const quote = quoteMatch ? quoteMatch[1].replace(/\n>\s*/g, " ").trim() : "";
 
     // Extract first prose paragraph as excerpt
@@ -138,17 +139,18 @@ export function getJournalBySlug(slug: string): JournalFull | null {
   }
 
   const fileContents = fs.readFileSync(fullPath, "utf8");
-  const { data, content } = matter(fileContents);
+  const { data, content: rawContentStr } = matter(fileContents);
+  const content = rawContentStr.replace(/\r\n/g, "\n");
 
   const wordCount = content.trim().split(/\s+/).length;
   const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
   const readingTime = `${readingMinutes} min read`;
 
-  const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/);
+  const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/m);
   const quote = quoteMatch ? quoteMatch[1].replace(/\n>\s*/g, " ").trim() : "";
 
-  // Parse Sections divided by ## headings
-  const sectionRegex = /##\s+([^\n]+)\n([\s\S]*?)(?=(?:##\s+[^\n]+|$))/g;
+  // Parse Sections divided by ## or ### headings
+  const sectionRegex = /(?:^|\n)#{2,3}\s+([^\n]+)\n([\s\S]*?)(?=\n#{2,3}\s+|$)/g;
   const sections: JournalSection[] = [];
   let match: RegExpExecArray | null;
 
@@ -166,23 +168,24 @@ export function getJournalBySlug(slug: string): JournalFull | null {
     });
   }
 
-  // Fallback for short-form dispatches without ## / ### headings
-  if (sections.length === 0) {
-    const strippedBody = content
-      .replace(/^#\s+[^\n]+\n*/m, "")
-      .replace(/^\*[^\n]+\*\n*/m, "")
-      .replace(/^\*\*The Crazy Journal[^\n]*\*\*\n*/m, "")
-      .replace(/^>\s*[\s\S]*?(?:\n\n|$)/m, "")
-      .replace(/^!\[[^\]]*\]\([^\)]+\)\n*/m, "")
-      .trim();
+  // Extract introductory prose before the first ##/### heading (or full body for short dispatches)
+  const firstHeadingIndex = content.search(/^#{2,3}\s+/m);
+  const rawIntro = firstHeadingIndex !== -1 ? content.slice(0, firstHeadingIndex) : content;
+  const cleanedIntro = rawIntro
+    .trim()
+    .replace(/^#\s+[^\n]+\s*/, "")
+    .replace(/^\*[^*\n]+\*\s*/, "")
+    .replace(/^\*\*The Crazy Journal[^\n]*\*\*\s*/, "")
+    .replace(/^>\s*[\s\S]*?(?:\n\n|$)/, "")
+    .replace(/^!\[[^\]]*\]\([^\)]+\)\s*/, "")
+    .trim();
 
-    if (strippedBody) {
-      sections.push({
-        id: "essay-body",
-        title: "The Dispatch",
-        content: strippedBody,
-      });
-    }
+  if (cleanedIntro) {
+    sections.unshift({
+      id: "introduction",
+      title: "",
+      content: cleanedIntro,
+    });
   }
 
   // Find linked anomalies that complement the essay themes

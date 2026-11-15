@@ -203,7 +203,7 @@ export default function JournalReaderClient({ journal }: Props) {
       journal.title,
       journal.subtitle,
       journal.quote,
-      ...journal.sections.map((s) => `${s.title}. ${s.content}`),
+      ...journal.sections.map((s) => (s.title ? `${s.title}. ${s.content}` : s.content)),
     ];
     const combined = parts.filter(Boolean).join("\n\n");
     const cleaned = cleanMarkdownForSpeech(combined);
@@ -888,16 +888,18 @@ export default function JournalReaderClient({ journal }: Props) {
                 className="scroll-mt-28 pt-4"
               >
                 {/* Section Title */}
-                <div className="flex items-baseline gap-3 mb-6 pb-2 border-b border-gray-100">
-                  {section.romanNumeral && (
-                    <span className="text-2xl sm:text-3xl font-heading font-extrabold text-nqq-coral">
-                      {section.romanNumeral}.
-                    </span>
-                  )}
-                  <h2 className="text-2xl sm:text-3xl font-bold text-nqq-blue font-heading tracking-tight">
-                    {section.title.replace(/^[IVXLCDM0-9]+\.\s*/i, "")}
-                  </h2>
-                </div>
+                {section.title && (
+                  <div className="flex items-baseline gap-3 mb-6 pb-2 border-b border-gray-100">
+                    {section.romanNumeral && (
+                      <span className="text-2xl sm:text-3xl font-heading font-extrabold text-nqq-coral">
+                        {section.romanNumeral}.
+                      </span>
+                    )}
+                    <h2 className="text-2xl sm:text-3xl font-bold text-nqq-blue font-heading tracking-tight">
+                      {section.title.replace(/^[IVXLCDM0-9]+\.\s*/i, "")}
+                    </h2>
+                  </div>
+                )}
 
                 {/* Section Paragraphs */}
                 <div className="text-gray-800 text-base sm:text-lg leading-[1.85] font-normal flow-root">
@@ -905,8 +907,17 @@ export default function JournalReaderClient({ journal }: Props) {
                     const trimmed = para.trim();
                     if (!trimmed) return null;
 
+                    // Horizontal Rule
+                    if (/^-{3,}$/.test(trimmed)) {
+                      return <hr key={pIdx} className="my-8 border-gray-200" />;
+                    }
+
                     // Bold Takeaway Axiom Box
-                    if (trimmed.startsWith("**") && trimmed.endsWith("**")) {
+                    if (
+                      trimmed.startsWith("**") &&
+                      trimmed.endsWith("**") &&
+                      !trimmed.slice(2, -2).includes("**")
+                    ) {
                       const inner = trimmed.slice(2, -2);
                       return (
                         <div
@@ -938,6 +949,29 @@ export default function JournalReaderClient({ journal }: Props) {
                         >
                           {renderInlineFormatting(trimmed.replace(/^>\s*/, ""))}
                         </blockquote>
+                      );
+                    }
+
+                    // Bullet List Block
+                    const lines = trimmed.split("\n").map((l) => l.trim()).filter(Boolean);
+                    if (lines.some((line) => line.startsWith("- "))) {
+                      const nonBullets = lines.filter((line) => !line.startsWith("- "));
+                      const bullets = lines.filter((line) => line.startsWith("- "));
+                      return (
+                        <div key={pIdx} className="my-5 space-y-3">
+                          {nonBullets.map((line, lIdx) => (
+                            <p key={`nb-${lIdx}`} className="mb-2">
+                              {renderInlineFormatting(line)}
+                            </p>
+                          ))}
+                          <ul className="list-disc pl-6 space-y-2.5 text-gray-800">
+                            {bullets.map((line, bIdx) => (
+                              <li key={`b-${bIdx}`}>
+                                {renderInlineFormatting(line.replace(/^-\s+/, ""))}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       );
                     }
 

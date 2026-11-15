@@ -725,3 +725,14 @@ Because if the gospel we preach has absolutely no implications for how we treat 
 ---
 
 *The Crazy Journal — where faith is not exempt from uncomfortable questions, and religious language is never a substitute for human responsibility.*
+
+### Biblical references to accompany publication
+
+These passages provide the scriptural foundation for the article without claiming that every Christian tradition interprets them identically.
+
+- Luke 4:16–21: Jesus announces his mission using the language of good news, freedom and liberation.
+- Matthew 25:31–46: The treatment of hungry, thirsty, sick, imprisoned and vulnerable people is presented as spiritually significant.
+- James 2:14–17: Faith without practical care for people in need is challenged.
+- Amos 5:21–24 and Micah 6:8: Worship, justice, mercy and righteousness are connected.
+- Matthew 6:10: The Lord's Prayer includes the desire for God's will to be done on earth.
+- Romans 8:19–23 and Revelation 21:1–5: Christian hope extends to redemption and renewal, not merely escape from the physical world.
