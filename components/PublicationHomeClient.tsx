@@ -39,7 +39,6 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
   const [subscribed, setSubscribed] = useState(false);
 
   const [featuredSlug, setFeaturedSlug] = useState<string>(
-    initialJournals.find((j) => j.slug === "you-can-have-power-and-still-be-weak")?.slug ||
     initialJournals[0]?.slug || ""
   );
   const featured = initialJournals.find((j) => j.slug === featuredSlug) || initialJournals[0];

@@ -99,8 +99,12 @@ export function getAllJournals(): JournalMeta[] {
 
     const title = data.title || slug.replace(/-/g, " ");
     const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";
-    const created = data.created ? String(data.created) : (data.date ? String(data.date) : new Date().toISOString().split("T")[0]);
+    const rawDate = data.created || data.date;
+    const created = rawDate instanceof Date
+      ? rawDate.toISOString().split("T")[0]
+      : (rawDate ? String(rawDate) : new Date().toISOString().split("T")[0]);
     const aliases = data.aliases || (data.description ? [data.description] : []);
+    const thumbnail = data.thumbnail || getDefaultThumbnailForSlug(slug);
 
     return {
       slug,
@@ -115,11 +119,16 @@ export function getAllJournals(): JournalMeta[] {
       quote,
       excerpt,
       promotionalExcerpt,
+      thumbnail,
     };
   });
 
-  // Sort by date descending
-  return journals.sort((a, b) => (a.created < b.created ? 1 : -1));
+  // Sort by date descending (chronological timestamp)
+  return journals.sort((a, b) => {
+    const timeA = new Date(a.created).getTime() || 0;
+    const timeB = new Date(b.created).getTime() || 0;
+    return timeB - timeA;
+  });
 }
 
 export function getJournalBySlug(slug: string): JournalFull | null {
