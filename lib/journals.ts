@@ -166,6 +166,25 @@ export function getJournalBySlug(slug: string): JournalFull | null {
     });
   }
 
+  // Fallback for short-form dispatches without ## / ### headings
+  if (sections.length === 0) {
+    const strippedBody = content
+      .replace(/^#\s+[^\n]+\n*/m, "")
+      .replace(/^\*[^\n]+\*\n*/m, "")
+      .replace(/^\*\*The Crazy Journal[^\n]*\*\*\n*/m, "")
+      .replace(/^>\s*[\s\S]*?(?:\n\n|$)/m, "")
+      .replace(/^!\[[^\]]*\]\([^\)]+\)\n*/m, "")
+      .trim();
+
+    if (strippedBody) {
+      sections.push({
+        id: "essay-body",
+        title: "The Dispatch",
+        content: strippedBody,
+      });
+    }
+  }
+
   // Find linked anomalies that complement the essay themes
   const tags: string[] = (data.tags || []).map((t: string) => t.toLowerCase());
   const linkedAnomalies = SEED_ANOMALIES.filter((anomaly) => {
@@ -265,7 +284,10 @@ export function getJournalBySlug(slug: string): JournalFull | null {
 
   const title = data.title || slug.replace(/-/g, " ");
   const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";
-  const created = data.created ? String(data.created) : (data.date ? String(data.date) : new Date().toISOString().split("T")[0]);
+  const rawDate = data.created || data.date;
+  const created = rawDate instanceof Date
+    ? rawDate.toISOString().split("T")[0]
+    : (rawDate ? String(rawDate) : new Date().toISOString().split("T")[0]);
   const aliases = data.aliases || (data.description ? [data.description] : []);
 
   const imageMatch = content.match(/!\[.*?\]\((.*?)\)/);
