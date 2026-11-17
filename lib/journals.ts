@@ -56,6 +56,10 @@ function getDefaultThumbnailForSlug(slug: string): string {
     "trading-is-gambling-charts-make-it-look-intelligent": "/images/journals/overthink.png",
     "what-kind-of-fool-declares-war-on-the-water-he-drinks": "/images/journals/my-thoughts-my-words.png",
     "binary-options-casino-or-trading": "/images/journals/shattered-certainty.png",
+    "she-is-not-an-ashewo-she-is-ovulating": "/images/journals/she-is-ovulating.jpg",
+    "stop-promising-people-heaven-while-helping-to-make-their-lives-hell-on-earth": "/images/journals/heaven-and-hell.jpg",
+    "we-are-still-releasing-barabbas-and-crucifying-jesus": "/images/journals/releasing-barabbas.jpg",
+    "nvidia-lost-nearly-2-trillion-opportunity-in-disaster": "/images/journals/nvidia-opportunity.jpg",
   };
   return map[slug] || "/images/journals/overthink.png";
 }
