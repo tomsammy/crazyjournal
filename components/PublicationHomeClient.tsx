@@ -32,6 +32,14 @@ interface Props {
   allTags: string[];
 }
 
+function stripImageMarkdown(text?: string): string {
+  if (!text) return "";
+  return text
+    .replace(/!\[[^\]]*\]\([^\)]+\)/g, "")
+    .replace(/<img[^>]*>/gi, "")
+    .trim();
+}
+
 export default function PublicationHomeClient({ initialJournals, allTags }: Props) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState<string>("all");
@@ -137,9 +145,11 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
               )}
 
               {/* Editorial Narrative / Excerpt */}
-              <p className="text-slate-200/90 text-sm sm:text-base leading-relaxed font-sans pt-2 max-w-2xl line-clamp-6 sm:line-clamp-none">
-                {featured?.excerpt}
-              </p>
+              {featured?.excerpt && stripImageMarkdown(featured.excerpt) && (
+                <p className="text-slate-200/90 text-sm sm:text-base leading-relaxed font-sans pt-2 max-w-2xl line-clamp-6 sm:line-clamp-none">
+                  {stripImageMarkdown(featured.excerpt)}
+                </p>
+              )}
             </div>
 
             {/* Bottom: Author Metadata + Action Buttons */}
@@ -353,9 +363,11 @@ export default function PublicationHomeClient({ initialJournals, allTags }: Prop
                       </p>
                     )}
 
-                    <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-2">
-                      {j.excerpt}
-                    </p>
+                    {j.excerpt && stripImageMarkdown(j.excerpt) && (
+                      <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed mb-2">
+                        {stripImageMarkdown(j.excerpt)}
+                      </p>
+                    )}
                   </div>
                 </div>
 

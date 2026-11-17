@@ -1,7 +1,7 @@
 ---
 thumbnail: "/images/journals/nvidia-opportunity.jpg"
 title: "NVIDIA LOST NEARLY $2 TRILLION. I SEE A POTENTIAL OPPORTUNITY WHERE OTHERS SEE A DISASTER."
-description: "Jensen Huang is gone. The headlines are frightening. But when quarterly revenue is $96.2 billion and growing 106% year on year, is Nvidia genuinely broken—or has market fear created an extraordinary opportunity?"
+description: "The stock has collapsed. But the business hasn't demonstrated a comparable collapse."
 aliases:
   - Nvidia Lost Nearly $2 Trillion
   - Potential Opportunity Where Others See Disaster

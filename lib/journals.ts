@@ -37,6 +37,78 @@ export interface JournalFull extends JournalMeta {
 
 const JOURNALS_DIR = path.join(process.cwd(), "content", "journals");
 
+export function cleanProse(text: string): string {
+  if (!text) return "";
+  return text
+    // Remove markdown images: ![alt](url)
+    .replace(/!\[[^\]]*\]\([^\)]+\)/g, "")
+    // Remove standalone HTML img tags: <img ... />
+    .replace(/<img[^>]*>/gi, "")
+    // Replace markdown links with link text: [text](url) -> text
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+    // Remove bold/italic markdown: **text** -> text, *text* -> text
+    .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, "$1")
+    // Remove blockquote markers
+    .replace(/^>\s*/gm, "")
+    // Remove heading markers
+    .replace(/^#{1,6}\s+/gm, "")
+    // Collapse multiple whitespace
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+export function extractExcerptAndQuote(
+  content: string,
+  data: Record<string, any>
+): { quote: string; excerpt: string } {
+  // Extract leading blockquote if present
+  const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/m);
+  const quote = quoteMatch ? cleanProse(quoteMatch[1].replace(/\n>\s*/g, " ")) : "";
+
+  // Extract candidate prose paragraphs
+  const rawParagraphs = content
+    .split("\n\n")
+    .map((p) => p.trim())
+    .filter((p) => {
+      if (!p) return false;
+      // Exclude markdown headings, quotes, italics/bold header lines, images, list items, hr
+      if (
+        p.startsWith("#") ||
+        p.startsWith(">") ||
+        p.startsWith("*") ||
+        p.startsWith("!") ||
+        p.startsWith("-") ||
+        p.startsWith("_")
+      ) {
+        return false;
+      }
+      return cleanProse(p).length > 0;
+    })
+    .map(cleanProse)
+    .filter((p) => p.length > 0);
+
+  // Accumulate short punchy sentences to form a rich, coherent excerpt (up to ~180-220 chars)
+  let accumulated = "";
+  for (const para of rawParagraphs) {
+    if (!accumulated) {
+      accumulated = para;
+    } else if (accumulated.length < 160) {
+      accumulated += " " + para;
+    } else {
+      break;
+    }
+  }
+
+  const excerpt =
+    cleanProse(data.excerpt || "") ||
+    accumulated ||
+    quote ||
+    cleanProse(data.description || "") ||
+    "";
+
+  return { quote, excerpt };
+}
+
 function extractRomanNumeral(title: string): string | undefined {
   const match = title.match(/^(?:Section\s+)?([IVXLCDM]+)[\.\:\s]/i);
   return match ? match[1].toUpperCase() : undefined;
@@ -90,17 +162,8 @@ export function getAllJournals(): JournalMeta[] {
     const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
     const readingTime = `${readingMinutes} min read`;
 
-    // Extract leading blockquote if present
-    const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/m);
-    const quote = quoteMatch ? quoteMatch[1].replace(/\n>\s*/g, " ").trim() : "";
-
-    // Extract first prose paragraph as excerpt
-    const proseParagraphs = content
-      .split("\n\n")
-      .map((p) => p.trim())
-      .filter((p) => p && !p.startsWith("#") && !p.startsWith(">") && !p.startsWith("*"));
+    const { quote, excerpt } = extractExcerptAndQuote(content, data);
     const promotionalExcerpt = data.promotional_excerpt || data.promotionalExcerpt || "";
-    const excerpt = data.excerpt || proseParagraphs[0] || quote || "";
 
     const title = data.title || slug.replace(/-/g, " ");
     const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";
@@ -150,8 +213,8 @@ export function getJournalBySlug(slug: string): JournalFull | null {
   const readingMinutes = Math.max(1, Math.ceil(wordCount / 220));
   const readingTime = `${readingMinutes} min read`;
 
-  const quoteMatch = content.match(/^>\s*([\s\S]*?)(?:\n\n|\n##|$)/m);
-  const quote = quoteMatch ? quoteMatch[1].replace(/\n>\s*/g, " ").trim() : "";
+  const { quote, excerpt } = extractExcerptAndQuote(content, data);
+  const promotionalExcerpt = data.promotional_excerpt || data.promotionalExcerpt || "";
 
   // Parse Sections divided by ## or ### headings
   const sectionRegex = /(?:^|\n)#{2,3}\s+([^\n]+)\n([\s\S]*?)(?=\n#{2,3}\s+|$)/g;
@@ -282,12 +345,7 @@ export function getJournalBySlug(slug: string): JournalFull | null {
   // Parse markdown body to HTML with marked
   const htmlContent = marked.parse(content) as string;
 
-  const proseParagraphs = content
-    .split("\n\n")
-    .map((p) => p.trim())
-    .filter((p) => p && !p.startsWith("#") && !p.startsWith(">") && !p.startsWith("*"));
-  const promotionalExcerpt = data.promotional_excerpt || data.promotionalExcerpt || "";
-  const excerpt = data.excerpt || proseParagraphs[0] || quote || "";
+
 
   const title = data.title || slug.replace(/-/g, " ");
   const subtitle = data.subtitle || data.description || (data.aliases && data.aliases[0]) || "";
