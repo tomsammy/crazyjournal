@@ -76,7 +76,7 @@ export default function RootLayout({
               {/* Action Button */}
               <div className="flex items-center gap-3">
                 <Link
-                  href="/journals/what-kind-of-fool-declares-war-on-the-water-he-drinks"
+                  href="/journals/nvidia-crashed-the-conspiracy-didnt-and-now-they-want-you-to-buy-the-dip"
                   className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg bg-brand-accent hover:bg-brand-accent-hover text-white font-heading font-bold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5"
                 >
                   Read Latest Issue
